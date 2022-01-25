@@ -12,22 +12,25 @@
 
     <style>
         #map {
-            height: 50vw;
+            height: 100vh;
+        }
+        
+        #offcanvasBtn {
+            position: fixed;
+            bottom: 4rem;
+            right: 2rem;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div id="filter">
-
-                </div>
-
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <div class="col-12 col-md-4 results-column">
+                <div class="accordion" id="accordionCounty"></div>
             </div>
-            <div class="col-12">
+            <div class="col-12 col-md-8">
                 <div id="map">
 
                 </div>
@@ -36,12 +39,59 @@
     </div>
 
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-light">
+                        <thead>
+                            <tr id="thtr">
+
+                            </tr>
+                        </thead>
+                        <tbody id="tb">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Launch demo modal</button>
+    <button id="offcanvasBtn" class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Toggle right offcanvas</button>
+    -->
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Results</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div id="accordionCountyOffcanvas" class="accordion">
+
+            </div>
+            ...
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script src="https://js.arcgis.com/3.39/"></script>
     <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol" async defer></script>
     <script>
         $(window).on('load', function() {
+
+            if (window.innerWidth <= 576) {
+                //$('.results-column').addClass('d-none');
+            }
             let url = new URL(window.location.href);
             let params = new URLSearchParams(url.search);
             const district = params.get('district');
@@ -57,6 +107,7 @@
             });
 
             map.getCredentials(function(c) {
+                $('.results').html('');
                 const district35Layer = new Microsoft.Maps.Layer();
                 const precinctLayer = new Microsoft.Maps.Layer();
                 map.layers.insert(precinctLayer);
@@ -87,16 +138,72 @@
                             dp.setOptions({
                                 fillColor: '#0000',
                                 strokeColor: '#000',
-                                strokeThickness: 1
+                                strokeThickness: 3
                             });
                         });
 
 
                         $.get('/sa/data/overlapping-precinct-codes.json', function(o) {
                             map.layers.insert(district35Layer);
+                            let ov = Object.values(o);
+                            let ok = Object.keys(o);
+                            let maxArr = ov.map(v => v.length).sort((a, b) => a < b)[0];
 
 
-                            Object.values(o).map(function(county, i) {
+                            Object.entries(o).map(function(t) {
+                                let c = t[0].substr(0, 1).toUpperCase() + t[0].substr(1);
+
+                                console.log(t[1])
+
+                            });
+
+                            let headers = ok.map(function(k) {
+                                let cap = k.substr(0, 1).toUpperCase() + k.substr(1);
+                                $('#thtr').append(`<th id="th${k}">${cap}</th>`)
+                                return `
+                                
+                                
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading${k}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${k}" aria-expanded="false" aria-controls="collapse${k}">
+                ${cap}
+            </button>
+        </h2>
+        <div id="collapse${k}" class="accordion-collapse collapse" aria-labelledby="heading${k}" data-bs-parent="#accordionCounty">
+            <div class="accordion-body p-0">
+                <div class="list-group list-group-flush results" id="${k}"></div>
+            </div>
+        </div>
+    </div>
+                                `;
+                            }).join('');
+
+                            let headers2 = ok.map(function(k) {
+                                let cap = k.substr(0, 1).toUpperCase() + k.substr(1);
+                                return `
+    
+    
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading${k}2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${k}2" aria-expanded="false" aria-controls="collapse${k}2">
+                ${cap}
+            </button>
+        </h2>
+        <div id="collapse${k}2" class="accordion-collapse collapse" aria-labelledby="heading${k}2" data-bs-parent="#accordionCounty">
+            <div class="accordion-body p-0">
+                <div class="list-group list-group-flush results" id="${k}2"></div>
+            </div>
+        </div>
+    </div>
+                                `;
+                            }).join('');
+
+                            $('#accordionCounty').html(headers);
+                            $('#accordionCountyOffcanvas').html(headers2);
+                            ov.map(function(county, i) {
+                                let countyuuid = crypto.randomUUID();
+
+
                                 if (i > -1) {
                                     county.map(function(precinct) {
                                         let pcc = precinct.code;
@@ -111,11 +218,15 @@
                                                 title: precinct.disp,
                                                 icon: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="4" fill="#0000" /></svg>',
                                                 anchor: new Microsoft.Maps.Point(5, 5)
-
                                             });
 
                                             precinctLayer.add(pin);
                                             let precinctLayerPrimitives = precinctLayer.getPrimitives();
+                                            let prcLoc = ps[0].geometry.boundingBox.center;
+                                            let a = `<a href="https://maps.google.com?q=${prcLoc.latitude},${prcLoc.longitude}" class="list-group-item list-group-item-action">${precinct.disp}</a>`;
+
+
+                                            $(`#${county[0].name}`).append(a);
 
                                             precinctLayerPrimitives.map(function(pp) {
                                                 pp.setOptions({
@@ -123,7 +234,6 @@
                                                     strokeColor: '#ffffff80'
                                                 });
 
-                                                console.log()
 
                                                 pp.precinctInfo = precinct
                                                 pp.precinctInfo.geojsonURL = precinctURL
@@ -156,7 +266,7 @@
                                 strokeColor: '#00ffff',
                                 strokeThickness: 1
                             });
-                            console.log(pshape.precinctInfo);
+                            $('#results').html(JSON.stringify(pshape.precinctInfo, null, 4))
                         });
 
 
