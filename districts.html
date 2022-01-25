@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" />
+
+    <title>Districts</title>
+
+    <style>
+        #map {
+            height: 50vw;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div id="filter">
+
+                </div>
+
+            </div>
+            <div class="col-12">
+                <div id="map">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="https://js.arcgis.com/3.39/"></script>
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol" async defer></script>
+    <script>
+        $(window).on('load', function() {
+            let url = new URL(window.location.href);
+            let params = new URLSearchParams(url.search);
+            const district = params.get('district');
+
+            const precinctBaseURL = new URL("https://giswebe.tlc.texas.gov/ArcGIS/rest/services/Find/MapServer/2/query?f=geojson&outFields=PREC&spatialRel=esriSpatialRelIntersects&where=pctkey");
+
+            const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+
+            const map = new Microsoft.Maps.Map('#map', {
+                credentials: BingMapsMasterKey,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                minZoom: 4
+            });
+
+            map.getCredentials(function(c) {
+                const district35Layer = new Microsoft.Maps.Layer();
+                const precinctLayer = new Microsoft.Maps.Layer();
+                map.layers.insert(precinctLayer);
+
+                const sessionKey = c;
+                let user_location = map.getCenter();
+
+                const usaVisualCenter = new Microsoft.Maps.Location(40.543191, -98.502460);
+
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath'], function() {
+                    const countiesLayer = new Microsoft.Maps.Layer();
+                    map.layers.insert(countiesLayer);
+
+
+
+
+
+                    Microsoft.Maps.GeoJson.readFromUrl('https://giswebe.tlc.texas.gov/ArcGIS/rest/services/plan_shaded/MapServer/0/query?f=geojson&spatialRel=esriSpatialRelIntersects&where=DistrictFinder%3D%274014_35%27', function(sha) {
+                        district35Layer.add(sha);
+
+                        map.setView({
+                            bounds: sha[0].geometry.boundingBox
+                        });
+
+                        let dl = district35Layer.getPrimitives();
+
+                        dl.map(function(dp) {
+                            dp.setOptions({
+                                fillColor: '#0000',
+                                strokeColor: '#000',
+                                strokeThickness: 1
+                            });
+                        });
+
+
+                        $.get('/sa/data/overlapping-precinct-codes.json', function(o) {
+                            map.layers.insert(district35Layer);
+
+
+                            Object.values(o).map(function(county, i) {
+                                if (i > -1) {
+                                    county.map(function(precinct) {
+                                        let pcc = precinct.code;
+                                        //console.log(precinct.disp)
+                                        let precinctURL = `https://giswebe.tlc.texas.gov/ArcGIS/rest/services/Find/MapServer/2/query?f=geojson&outFields=PREC&spatialRel=esriSpatialRelIntersects&where=pctkey%20%3D%20%27${pcc}%27`;
+
+                                        Microsoft.Maps.GeoJson.readFromUrl(precinctURL, function(ps) {
+
+                                            precinctLayer.add(ps);
+
+                                            var pin = new Microsoft.Maps.Pushpin(ps[0].geometry.rings[0].boundingBox.center, {
+                                                title: precinct.disp,
+                                                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="4" fill="#0000" /></svg>',
+                                                anchor: new Microsoft.Maps.Point(5, 5)
+
+                                            });
+
+                                            precinctLayer.add(pin);
+                                            let precinctLayerPrimitives = precinctLayer.getPrimitives();
+
+                                            precinctLayerPrimitives.map(function(pp) {
+                                                pp.setOptions({
+                                                    fillColor: '#ff00ff20',
+                                                    strokeColor: '#ffffff80'
+                                                });
+
+                                                console.log()
+
+                                                pp.precinctInfo = precinct
+                                                pp.precinctInfo.geojsonURL = precinctURL
+                                                pp.precinctInfo.jsonURL = precinctURL.replace(/geojson/i, 'json');
+                                            });
+                                        });
+                                    });
+                                }
+                            });
+                        });
+
+                        Microsoft.Maps.Events.addHandler(precinctLayer, 'click', function(e) {
+                            let pshape = e.primitive;
+                            map.setView({
+                                bounds: pshape.geometry.boundingBox
+                            });
+
+                            let plp = precinctLayer.getPrimitives();
+
+                            plp.map(function(pl) {
+                                pl.setOptions({
+                                    fillColor: '#ff00ff20',
+                                    strokeColor: '#ffffff80',
+                                    strokeThickness: 1
+                                });
+                            });
+
+                            pshape.setOptions({
+                                fillColor: '#ff00ff',
+                                strokeColor: '#00ffff',
+                                strokeThickness: 1
+                            });
+                            console.log(pshape.precinctInfo);
+                        });
+
+
+                    });
+
+                    navigator.geolocation.watchPosition(function(position) {
+                        var loc = new Microsoft.Maps.Location(
+                            position.coords.latitude,
+                            position.coords.longitude);
+
+                        //Update the user pushpin.
+                        userPin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                            visible: true
+                        });
+                        userPin.setLocation(loc);
+                        userPin.setOptions({
+                            visible: true
+                        });
+
+                        //map.setView({ center: loc});
+
+                    });
+
+
+                    navigator.geolocation.getCurrentPosition(function success(pos) {
+                        var crd = pos.coords;
+
+                        user_location = new Microsoft.Maps.Location(crd.latitude, crd.longitude);
+
+                        //map.setView({center: user_location,zoom: 8});
+
+                    }, function error(err) {
+                        console.warn(`ERROR(${err.code}): ${err.message}`);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+
+
+
+                });
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" />
+
+    <title>Districts</title>
+
+    <style>
+        #map {
+            height: 50vw;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div id="filter">
+
+                </div>
+
+            </div>
+            <div class="col-12">
+                <div id="map">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="https://js.arcgis.com/3.39/"></script>
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol" async defer></script>
+    <script>
+        $(window).on('load', function() {
+            let url = new URL(window.location.href);
+            let params = new URLSearchParams(url.search);
+            const district = params.get('district');
+
+
+            const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+
+            const map = new Microsoft.Maps.Map('#map', {
+                credentials: BingMapsMasterKey,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                minZoom: 4
+            });
+
+            map.getCredentials(function(c) {
+
+                $.getJSON('https://giswebe.tlc.texas.gov/ArcGIS/rest/services/plan_shaded/MapServer/0/query?f=geojson&spatialRel=esriSpatialRelIntersects&where=DistrictFinder%3D%274014_35%27', function(dist) {
+                    const precinctBaseURL = new URL("https://giswebe.tlc.texas.gov/ArcGIS/rest/services/Find/MapServer/2/query?f=json&outFields=PREC&spatialRel=esriSpatialRelIntersects&where=pctkey");
+                    //console.log(dist.features[0].geometry.coordinates[0]);
+
+                    $.get('/sa/data/overlapping-precinct-codes.json', function(o) {
+                        Object.values(o).map(function(county, i) {
+                            if (i == 2) {
+                                county.map(function(precinct) {
+                                    let pcc = precinct.code;
+
+                                    precinctURL = precinctBaseURL + encodeURIComponent(` = '${pcc}'`).replace(/'/g, "%27");
+
+
+                                    $.getJSON(precinctURL, function(bxc) {
+                                        console.log(precinct.name)
+                                        console.log(pcc)
+                                        console.log(precinctURL)
+                                            //console.log(bxc.features[0].geometry.rings[0])
+
+                                    })
+                                });
+                            }
+                        });
+                    });
+
+
+
+
+
+                });
+
+
+
+
+                const sessionKey = c;
+                let user_location = map.getCenter();
+                const usaVisualCenter = new Microsoft.Maps.Location(40.543191, -98.502460);
+
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath'], function() {
+                    const countiesLayer = new Microsoft.Maps.Layer();
+                    map.layers.insert(countiesLayer);
+
+                    var geoDataRequestOptions = {
+                        entityType: "AdminDivision2",
+                        getEntityMetadata: true,
+                        preferCuratedPolygons: true,
+                        lod: 1
+                    };
+                    const haysCounty = new Microsoft.Maps.Location(30.044790, -98.039313);
+                    const travisCounty = new Microsoft.Maps.Location(30.209702, -97.698227);
+                    const caldwellCounty = new Microsoft.Maps.Location(29.884706497192383, -97.67243957519531);
+                    const comalCounty = new Microsoft.Maps.Location(29.709884643554688, -98.1197280883789);
+                    const guadalupeCounty = new Microsoft.Maps.Location(29.580791473388672, -97.96854400634766);
+                    const bexarCounty = new Microsoft.Maps.Location(29.4251708984375, -98.49461364746094);
+                    const bastropCounty = new Microsoft.Maps.Location(30.117050170898438, -97.3088607788086);
+
+                    const locArr = [
+                        haysCounty,
+                        travisCounty,
+                        caldwellCounty,
+                        comalCounty,
+                        guadalupeCounty,
+                        bexarCounty,
+                        bastropCounty
+                    ];
+
+
+
+
+                    locArr.map(function(loc) {
+                        Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(loc, geoDataRequestOptions, map, function(data) {
+                            if (data.results && data.results.length > 0) {
+                                var polygon = data.results[0].Polygons[0];
+                                //countiesLayer.add(polygon);
+                                let cl = countiesLayer.getPrimitives();
+
+
+                                cl.map(function(cty) {
+                                    cty.setOptions({
+                                        fillColor: '#dd000030',
+                                        strokeColor: '#ffffff99'
+                                    });
+
+                                });
+                            }
+                        });
+                    });
+
+                    Microsoft.Maps.GeoJson.readFromUrl('/sa/data/dist35.geojson', function(shapes) {
+                        //Add the shape(s) to the map.geometry
+                        //map.entities.push(shapes);
+                        console.log(shapes.geometry.boundingBox);
+                        map.setView({
+                            bounds: shapes.geometry.boundingBox
+                        });
+                    });
+
+                    $.get('/sa/data/precinct-codes.json', function(prcnct) {
+                        prcnct.bexar.codes.map(function(x) {
+                            //console.log(x)
+                        })
+                    });
+
+                    Microsoft.Maps.GeoJson.readFromUrl('https://giswebe.tlc.texas.gov/ArcGIS/rest/services/plan_shaded/MapServer/0/query?f=geojson&spatialRel=esriSpatialRelIntersects&where=DistrictFinder%3D%274014_35%27', function(sha) {
+                        console.log(sha);
+                        const sssffsfsfsfs = new Microsoft.Maps.Layer();
+                        map.layers.insert(sssffsfsfsfs);
+                        sssffsfsfsfs.add(sha);
+                        let dddd = sssffsfsfsfs.getPrimitives();
+                        ddd.map(function(x) {
+                            x.setOptions({
+                                fillColor: '#0044dd30',
+                                strokeColor: '#ffff0099'
+                            });
+                        })
+                    });
+
+                    $.getJSON('http://maps.co.hays.tx.us/arcgis/rest/services/ElectionsDept/Hays_County_Map_For_ElectionsDept/MapServer/14?f=json', function(shapes2) {
+                        console.log(shapes2)
+                            //Add the shape(s) to the map.geometry
+                            //map.entities.push(shapes2);
+                            //console.log(shapes2.geometry.boundingBox);
+                    });
+
+
+                    $.getJSON('/sa/data/Texas_US_House_Districts.geojson', function(dst) {
+                        let selectedDist = [];
+                        dst.features.map(function(f, n) {
+                            if (f.properties.DIST_NBR == district) {
+                                selectedDist.push(f);
+                            }
+                        });
+
+                        dst.features = selectedDist;
+                        //console.log(dst);
+
+                        Microsoft.Maps.GeoJson.read(dst, function(shapes) {
+                            const districtLayer = new Microsoft.Maps.Layer();
+                            map.layers.insert(districtLayer);
+                            console.log(shapes)
+                                //districtLayer.add(shapes);
+                            Microsoft.Maps.Events.addHandler(districtLayer, 'click', function(e) {
+                                let shape = e.primitive;
+                                //console.log(shape.metadata)
+                            });
+
+                            let dl = districtLayer.getPrimitives();
+
+                            /*
+
+                                        $.get('form-check.html', function(fc) {
+
+                                            dl.map(function(x) {
+                                                let uuid = crypto.randomUUID(); //x.metadata.GlobalID.replace(/[{}]/g, '');
+                                                x.setOptions({
+                                                    fillColor: '#00000030',
+                                                    strokeColor: '#ffffff99'
+                                                });
+                                                let trs = `
+                                                <tr><td>District</td>td${x.metadata.DIST_NBR}</tr>
+                                                <tr><td>Rep Name</td>td${x.metadata.REP_NM}</tr>
+                                                <tr><td>Election Year</td>td${x.metadata.ELCTN_YR}</tr>
+                                                <tr><td>Place</td>td${x.metadata.PLACE}</tr>
+                                            `;
+
+                                                console.log(x.metadata.DIST_NBR);
+                                                let frmChk = $(fc);
+                                                frmChk.find('input').attr('id', uuid);
+                                                frmChk.find('input').val(uuid);
+                                                //frmChk.find('label').html(`District: ${x.metadata.District}<span class="text-muted ms-2">(${x.metadata.Name})</span>`);
+                                                frmChk.find('label').attr('for', uuid);
+                                                frmChk.find('tbody').html(trs);
+                                                $('#filter').append(frmChk)
+                                                console.log()
+
+
+
+                                            });
+
+
+
+                                        });
+
+
+                            */
+                        });
+
+                    })
+
+                    Microsoft.Maps.GeoJson.readFromUrl('/sa/data/Bexar_County_Voter_Precincts.geojson', function(shapes) {
+                        const precinctLayer = new Microsoft.Maps.Layer();
+                        map.layers.insert(precinctLayer);
+                        //precinctLayer.add(shapes);
+                        Microsoft.Maps.Events.addHandler(precinctLayer, 'click', function(e) {
+                            let pshape = e.primitive;
+                            console.log(pshape.metadata)
+                        });
+
+                        let pl = precinctLayer.getPrimitives();
+                    });
+
+
+                    navigator.geolocation.watchPosition(function(position) {
+                        var loc = new Microsoft.Maps.Location(
+                            position.coords.latitude,
+                            position.coords.longitude);
+
+                        //Update the user pushpin.
+                        userPin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                            visible: true
+                        });
+                        userPin.setLocation(loc);
+                        userPin.setOptions({
+                            visible: true
+                        });
+
+                        map.setView({
+                            center: loc
+                        });
+
+
+                    });
+
+
+                    navigator.geolocation.getCurrentPosition(function success(pos) {
+                        var crd = pos.coords;
+
+                        user_location = new Microsoft.Maps.Location(crd.latitude, crd.longitude);
+
+                        map.setView({
+                            center: user_location,
+                            zoom: 8
+                        });
+
+                    }, function error(err) {
+                        console.warn(`ERROR(${err.code}): ${err.message}`);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+
+                    map.setView({
+                        center: user_location
+                    });
+
+                });
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
