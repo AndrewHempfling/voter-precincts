@@ -143,7 +143,7 @@
                         });
 
 
-                        $.get('data/overlapping-precinct-codes.json', function(o) {
+                        $.get('https://andrewhempfling.github.io/voter-precincts/data/overlapping-precinct-codes.json', function(o) {
                             map.layers.insert(district35Layer);
                             let ov = Object.values(o);
                             let ok = Object.keys(o);
