@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous" />
+    <title>Bootstrap_5</title>
+
+    <style>
+        #storeLocator {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #controls {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            padding: 1rem;
+        }
+
+        #controls .card {
+            background-color: #fff;
+            box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+        }
+
+        #controls .backdrop {
+            position: absolute;
+            background-color: #000;
+            opacity: 0.2;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            height: 100%;
+            left: 0px;
+            top: 0px;
+        }
+
+        .loading-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(5px);
+            background-color: #00000080;
+            background: linear-gradient(-45deg, #ee775280, #e73c7e80, #23a6d580, #23d5ab80);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            z-index: 1100;
+            top: 0px;
+            left: 0px;
+        }
+
+        .loading-container:after {
+            content: ' ';
+            position: absolute;
+            top: calc(50% - 2.5rem);
+            left: calc(50% - 2.5rem);
+            display: inline-block;
+            width: 5rem;
+            height: 5rem;
+            border: .25em solid #ffffff;
+            border-right-color: transparent;
+            border-radius: 50%;
+            -webkit-animation: 2s linear infinite spinner-border;
+            animation: 2s linear infinite spinner-border;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="storeLocator">
+
+    </div>
+
+    <div id="controls">
+        <div class="backdrop d-none"></div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/explore">Precincts dataset</a>
+                        <a href="https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::redistricted-council-districts-2022/explore">Districts dataset</a>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="ShowDistricts" checked>
+                            <label class="form-check-label" for="ShowDistricts">Show Districts </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="ShowPrecincts" checked>
+                            <label class="form-check-label" for="ShowPrecincts">Show Precincts </label>
+                        </div>
+                        <div id="searchBoxContainer" class="form-control" style="padding: 0px;">
+                            <input id="searchBox" autocomplete="off" type="text" value="" class="form-control" placeholder="City, State, ZIP Code" />
+                        </div>
+                        <pre id="pre"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingContainer" class="loading-container"></div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol"></script>
+    <script>
+
+        $(window).on('load', function() {
+
+            const BingMapsKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+            const dataSource = 'https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/about';
+            const SanAntonio = {
+                "__type": "Location:http://schemas.microsoft.com/search/local/ws/rest/v1",
+                "bbox": [
+                    29.075069427490234,
+                    -99.14065551757812,
+                    29.76782989501953,
+                    -97.85380554199219
+                ],
+                "name": "San Antonio, TX",
+                "point": {
+                    "type": "Point",
+                    "coordinates": [
+                        29.4251709,
+                        -98.49461365
+                    ]
+                },
+                "address": {
+                    "adminDistrict": "TX",
+                    "adminDistrict2": "Bexar County",
+                    "countryRegion": "United States",
+                    "formattedAddress": "San Antonio, TX",
+                    "locality": "San Antonio"
+                },
+                "confidence": "High",
+                "entityType": "PopulatedPlace",
+                "geocodePoints": [
+                    {
+                        "type": "Point",
+                        "coordinates": [
+                            29.4251709,
+                            -98.49461365
+                        ],
+                        "calculationMethod": "Rooftop",
+                        "usageTypes": [
+                            "Display"
+                        ]
+                    }
+                ],
+                "matchCodes": [
+                    "Good"
+                ],
+                "center": {
+                    "latitude": 29.4251709,
+                    "longitude": -98.49461365,
+                    "altitude": 0,
+                    "altitudeReference": -1
+                }
+
+            }
+            const SanAntonioCoordinates = SanAntonio.geocodePoints.coordinates
+
+            const mapTypes = ["aerial", "canvasDark", "canvasLight", "birdseye", "grayscale", "mercator", "ordnanceSurvey", "road", "streetside"];
+
+            const map = new Microsoft.Maps.Map('#storeLocator', {
+                credentials: BingMapsKey,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                minZoom: 4,
+                center: SanAntonio.center,
+                mapTypeId: Microsoft.Maps.MapTypeId.grayscale,
+                supportedMapTypes: mapTypes.map(mt => Microsoft.Maps.MapTypeId[mt]),
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.minified,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square
+            });
+
+            const districtLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(districtLayer);
+
+            const precinctLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(precinctLayer);
+
+            map.getCredentials(function(sessionKey) {
+
+
+                Microsoft.Maps.Events.addHandler(map, 'click', function(e) {
+                    //console.log(e.location)
+                    //$('#pre').html(JSON.stringify(e));
+                });
+
+                //https://maps.bexar.org/arcgis/rest/services/EL/VoterPrecincts/MapServer/0/query?f=json&returnIdsOnly=false&returnCountOnly=false&returnGeometry=true&spatialRel=esriSpatialRelIntersects&where=1%3D1
+
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.AutoSuggest'], function() {
+
+
+                    const autosuggestManager = new Microsoft.Maps.AutosuggestManager(map);
+                    const SpatialMath = Microsoft.Maps.SpatialMath;
+
+
+                    autosuggestManager.attachAutosuggest('#searchBox', '#searchBoxContainer', function(autosuggestResult) {
+                        $('#pre').html(JSON.stringify(autosuggestResult, null, 4));
+                        map.setView({
+                            bounds: autosuggestResult.bestView
+                        });
+                    });
+
+                    $('#searchBox').attr('style', '');
+
+                    $.getJSON('Bexar_County_Voter_Precincts.geojson', function(precincts) {
+                        const defaultPolygonColors = {
+                            fillColor: 'rgba(0,0,0,0)',
+                            strokeColor: 'rgba(50,100,100,1)',
+                            strokeThickness: 1
+                        };
+
+                        const precinctShape = Microsoft.Maps.GeoJson.read(precincts, {
+                            polygonOptions: defaultPolygonColors
+                        });
+                        //map.entities.push(shape);
+                        precinctLayer.add(precinctShape);
+
+                        precinctLayer.getPrimitives().map(function(precinct) {
+                            //console.log(precinct)
+                            Microsoft.Maps.Events.addHandler(precinct, 'click', function() {
+                                console.log(precinct)
+                                $('#pre').html(JSON.stringify(precinct.metadata, null, 4));
+                                map.setView({
+                                    bounds: precinct.geometry.boundingBox
+                                })
+                                //map.setView({bounds: polygon.geometry.boundingBox});<?xml version="1.0" encoding="UTF-8"?>
+
+                            });
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseout', function() {
+                                precinct.setOptions(defaultPolygonColors);
+                            });
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseover', function() {
+                                precinct.setOptions({ fillColor: 'rgba(0,0,0,.2)' });
+                            });
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mousedown', function() {
+                                precinct.setOptions({
+                                    fillColor: 'rgba(255,255,255,.5)',
+                                    strokeColor: 'black',
+                                    strokeThickness: 1
+                                });
+                            });
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseup', function() {
+                                precinct.setOptions(defaultPolygonColors);
+                            });
+
+                        });
+                        $('#ShowPrecincts').change(function() {
+                            let precinctChecked = this.checked;
+                            precinctLayer.getPrimitives().map(function(precinct) {
+                                precinct.setOptions({ visible: precinctChecked });
+                            });
+                        });
+
+                        removeLoader()
+                    });
+
+                    $.getJSON('Redistricted_Council_Districts_2022.geojson', function(districts) {
+                        const transparency = '80';
+                        const fillColors = {
+                            "1": "#f1d8ff",
+                            "2": "#aff8df",
+                            "3": "#ffe5b2",
+                            "4": "#d8e4ff",
+                            "5": "#e6d0c5",
+                            "6": "#fffed8",
+                            "7": "#ffb2b2",
+                            "8": "#e5fed8",
+                            "9": "#66cbb4",
+                            "10": "#66cbf0"
+                        };
+
+                        const districtShape = Microsoft.Maps.GeoJson.read(districts, {
+                            polygonOptions: {
+                                fillColor: 'rgba(0,0,0,0)',
+                                strokeColor: 'rgba(0,0,0,0)',
+                                strokeThickness: 5
+                            }
+                        });
+
+                        districtLayer.add(districtShape);
+
+
+                        //console.log(coordsStr)
+
+                        //console.log(minX, minY)
+                        //console.log(testRings.y)
+                        //console.log(districtShape[0])
+                        //console.log(testRings.y)
+
+                        $('#ShowDistricts').change(function() {
+                            let districtChecked = this.checked;
+                            districtLayer.getPrimitives().map(function(district) {
+                                district.setOptions({ visible: districtChecked });
+                            });
+                        });
+
+                        districtLayer.getPrimitives().map(function(district) {
+                            district.setOptions({ fillColor: fillColors[district.metadata.District] + transparency });
+                        });
+                        removeLoader()
+                    });
+                });
+
+                function removeLoader() {
+                    if (districtLayer.getPrimitives().length > 0 && precinctLayer.getPrimitives().length > 0) {
+                        $('#loadingContainer').remove();
+                    }
+                }
+            });
+
+            /*
+            
+                        user_location = map.getCenter();
+            
+                        usaVisualCenter = new Microsoft.Maps.Location(40.543191, -98.502460);
+            
+                        map.setView({
+                            center: usaVisualCenter
+                        });
+            
+                        navigator.geolocation.getCurrentPosition(function success(pos) {
+                            var crd = pos.coords;
+            
+                            user_location = new Microsoft.Maps.Location(crd.latitude, crd.longitude);
+            
+                        }, function error(err) {
+                            console.warn(`ERROR(${err.code}): ${err.message}`);
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 0
+                        });
+                        */
+
+        });
+
+        function bboxToRect(b) {
+            let nw = new Microsoft.Maps.Location(b[2], b[1]);
+            let se = new Microsoft.Maps.Location(b[0], b[3]);
+            return new Microsoft.Maps.LocationRect.fromCorners(nw, se);
+        }
+    </script>
+
+</body>
+
+</html>
