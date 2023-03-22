@@ -9,7 +9,7 @@
         crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
         crossorigin="anonymous" />
-    <title>Bootstrap_5</title>
+    <title>2022 Voter Precincts</title>
 
     <style>
         #storeLocator {
@@ -83,6 +83,18 @@
                 background-position: 0% 50%;
             }
         }
+
+        #precinct_as {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-left: 0;
+            margin-bottom: 0;
+            border-radius: .25rem;
+        }
     </style>
 </head>
 
@@ -101,15 +113,23 @@
                         <a href="https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/explore">Precincts dataset</a>
                         <a href="https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::redistricted-council-districts-2022/explore">Districts dataset</a>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="ShowDistricts" checked>
+                            <input class="form-check-input" type="checkbox" value="" id="ShowDistricts">
                             <label class="form-check-label" for="ShowDistricts">Show Districts </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="ShowPrecincts" checked>
                             <label class="form-check-label" for="ShowPrecincts">Show Precincts </label>
                         </div>
+                        <label for="searchBox">Address Search</label>
                         <div id="searchBoxContainer" class="form-control" style="padding: 0px;">
                             <input id="searchBox" autocomplete="off" type="text" value="" class="form-control" placeholder="City, State, ZIP Code" />
+                        </div>
+                        <div class="my-3">
+                            <label for="precinctSearch" class="form-label">Precinct Search</label>
+                            <input id="precinctSearch" type="text" class="form-control">
+                            <div class="position-relative">
+                                <div id="precinct_as"></div>
+                            </div>
                         </div>
                         <pre id="pre"></pre>
                     </div>
@@ -120,15 +140,36 @@
 
     <div id="loadingContainer" class="loading-container"></div>
 
+    <div id="infoboxHTML">
+        <div class="card d-none">
+            <div class="card-body">
+                <h5 class="card-title">Card Title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" id="getDirections">Go somewhere</a>
+
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol"></script>
     <script>
-
         $(window).on('load', function() {
 
-            const BingMapsKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+            let shiftHold = false;
+            let multiSelectArray = [];
+            $(document).keydown(function(e) {
+                if (e.shiftKey) {
+                    shiftHold = true;
+                }
+            });
+
+            $(document).keyup(function(event) {
+                shiftHold = false;
+            });
+
+            const BingMapsMasterKey = 'AoZktRDf56_rJu2MkwaO2mUnOLn5FgKAd5o4V5KKhWzK85flP9UhKcKljSL1a6qL';
             const dataSource = 'https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/about';
             const SanAntonio = {
                 "__type": "Location:http://schemas.microsoft.com/search/local/ws/rest/v1",
@@ -184,9 +225,10 @@
             const mapTypes = ["aerial", "canvasDark", "canvasLight", "birdseye", "grayscale", "mercator", "ordnanceSurvey", "road", "streetside"];
 
             const map = new Microsoft.Maps.Map('#storeLocator', {
-                credentials: BingMapsKey,
+                credentials: BingMapsMasterKey,
                 navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
                 minZoom: 4,
+                maxZoom: 17,
                 center: SanAntonio.center,
                 mapTypeId: Microsoft.Maps.MapTypeId.grayscale,
                 supportedMapTypes: mapTypes.map(mt => Microsoft.Maps.MapTypeId[mt]),
@@ -202,19 +244,44 @@
 
             map.getCredentials(function(sessionKey) {
 
-
-                Microsoft.Maps.Events.addHandler(map, 'click', function(e) {
-                    //console.log(e.location)
-                    //$('#pre').html(JSON.stringify(e));
+                let infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                    htmlContent: $('#infoboxHTML').html()
                 });
+                //htmlContent: $('#infoboxHTML').html()
+                infobox.setMap(map);
 
                 //https://maps.bexar.org/arcgis/rest/services/EL/VoterPrecincts/MapServer/0/query?f=json&returnIdsOnly=false&returnCountOnly=false&returnGeometry=true&spatialRel=esriSpatialRelIntersects&where=1%3D1
 
-                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.AutoSuggest'], function() {
-
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.AutoSuggest', 'Microsoft.Maps.Search'], function() {
 
                     const autosuggestManager = new Microsoft.Maps.AutosuggestManager(map);
+                    const searchManager = new Microsoft.Maps.Search.SearchManager(map);
                     const SpatialMath = Microsoft.Maps.SpatialMath;
+
+                    Microsoft.Maps.Events.addHandler(map, 'click', function(e) {
+                        //console.log(e.location)
+                        let searchRequest = {
+                            location: e.location,
+                            includeEntityTypes: ['Address', 'Neighborhood'],
+                            callback: function(r) {
+                                //Tell the user the name of the result.
+                                console.log(r);
+                                console.log(r.name);
+                                console.log(r.address.locality);
+                                let googleURL = `https://maps.google.com/?q=${r.name}`.replace(/\s/g, '+');
+                                $('#infoboxHTML')
+                                $('#getDirections').attr('href', googleURL);
+                                $('#getDirections').html(r.name + '<i class="fa fa-external-link ms-2" aria-hidden="true"></i>');
+
+                                infobox.setOptions({
+                                    location: r.location,
+                                    visible: true
+                                });
+                            }
+                        };
+                        searchManager.reverseGeocode(searchRequest);
+                        //$('#pre').html(JSON.stringify(e));
+                    });
 
 
                     autosuggestManager.attachAutosuggest('#searchBox', '#searchBoxContainer', function(autosuggestResult) {
@@ -228,8 +295,8 @@
 
                     $.getJSON('Bexar_County_Voter_Precincts.geojson', function(precincts) {
                         const defaultPolygonColors = {
-                            fillColor: 'rgba(0,0,0,0)',
-                            strokeColor: 'rgba(50,100,100,1)',
+                            fillColor: 'rgba(255,255,255,.2)',
+                            strokeColor: 'rgba(0,100,200,1)',
                             strokeThickness: 1
                         };
 
@@ -238,16 +305,31 @@
                         });
                         //map.entities.push(shape);
                         precinctLayer.add(precinctShape);
+                        const precinctLayerPrimitives = precinctLayer.getPrimitives();
+                        precinctLayerPrimitives.map(function(precinct) {
 
-                        precinctLayer.getPrimitives().map(function(precinct) {
-                            //console.log(precinct)
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseover', function(e) {
+                                //precinct.setOptions({ fillColor: 'rgba(0,0,0,.2)' });
+                                console.log(shiftHold)
+                            });
+
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseout', function(e) {
+                                //precinct.setOptions(defaultPolygonColors);
+                            });
+                            let precinctMapPDF = `https://home.bexar.org/electionsResources/precincts/vp_{4054}.pdf`;
                             Microsoft.Maps.Events.addHandler(precinct, 'click', function() {
-                                console.log(precinct)
+                                //$('#pre').html(JSON.stringify(precinct.metadata, null, 4));
+                                //map.setView({bounds: precinct.geometry.boundingBox});
+                            });
+                            //console.log(precinct)
+                            /*
+                            Microsoft.Maps.Events.addHandler(precinct, 'click', function() {
                                 $('#pre').html(JSON.stringify(precinct.metadata, null, 4));
                                 map.setView({
                                     bounds: precinct.geometry.boundingBox
                                 })
-                                //map.setView({bounds: polygon.geometry.boundingBox});<?xml version="1.0" encoding="UTF-8"?>
+                                //map.setView({bounds: polygon.geometry.boundingBox});
 
                             });
 
@@ -266,16 +348,43 @@
                                     strokeThickness: 1
                                 });
                             });
+
                             Microsoft.Maps.Events.addHandler(precinct, 'mouseup', function() {
                                 precinct.setOptions(defaultPolygonColors);
                             });
+                            */
 
                         });
+
                         $('#ShowPrecincts').change(function() {
                             let precinctChecked = this.checked;
-                            precinctLayer.getPrimitives().map(function(precinct) {
+                            precinctLayerPrimitives.map(function(precinct) {
                                 precinct.setOptions({ visible: precinctChecked });
                             });
+                        });
+
+                        $('#precinctSearch').keyup(function(e) {
+                            let thisVal = $(this).val();
+                            $('#precinct_as').empty();
+
+                            console.log(e.originalEvent.keyCode)
+                            if (thisVal != '') {
+                                let r = new RegExp(`^${thisVal}`);
+                                let results = precinctLayerPrimitives.sort((a, b) => a.metadata.NAME.localeCompare(b.metadata.NAME)).filter(x => x.metadata.NAME.match(r) != null).filter((x, i) => i < 10);
+                                results.map(function(precinct) {
+                                    //console.log(precinct.metadata)
+                                    let precinctBtn = $(`<button type="button" class="list-group-item list-group-item-action">${precinct.metadata.NAME}</button>`);
+
+                                    $('#precinct_as').append(precinctBtn);
+                                    precinctBtn.click(function() {
+                                        $('#precinctSearch').val('');
+                                        $('#precinct_as').empty();
+                                        console.log(precinct.metadata.NAME)
+                                        map.setView({ bounds: precinct.geometry.boundingBox });
+                                    });
+                                });
+                                //e.originalEvent.keyCode
+                            }
                         });
 
                         removeLoader()
@@ -322,7 +431,9 @@
                         });
 
                         districtLayer.getPrimitives().map(function(district) {
-                            district.setOptions({ fillColor: fillColors[district.metadata.District] + transparency });
+                            if (ShowDistricts.checked) {
+                                district.setOptions({ fillColor: fillColors[district.metadata.District] + transparency });
+                            }
                         });
                         removeLoader()
                     });
