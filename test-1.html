@@ -259,6 +259,8 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            overflow-y: scroll;
+            position: relative;
         }
 
 
@@ -341,8 +343,9 @@
 
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="optionsPanel" aria-labelledby="optionsPanelLabel">
+        <button style="position: fixed; right: 10px; bottom: 10px; z-index: 1051;" class="btn btn-primary" id="optimizeRoute">optimize</button>
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="optionsPanelLabel">Offcanvas</h5>
+            <h5 class="offcanvas-title" id="optionsPanelLabel">precinct search</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div id="precinctRouteContainerParent">
@@ -359,7 +362,7 @@
                     </div>
                 </div>
                 <div id="precinctRouteMenu" class="list-group d-none">
-                    <button class="list-group-item list-group-item-action" data-type="address" id="addAddress">Add Address</button>
+                    <button class="list-group-item list-group-item-action d-none" data-type="address" id="addAddress">Add Address</button>
                     <button disabled class="list-group-item list-group-item-action" data-type="precinct" id="addPrecinct">Add Precinct</button>
                 </div>
             </div>
@@ -386,8 +389,7 @@
     <script src="js/bundle.js"></script>
 
     <script>
-
-
+        let selectedPrecinctsMetadata;
 
         const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
         const dataSource = 'https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/about';
@@ -549,27 +551,24 @@
 
                     $.getJSON('Bexar_County_Voter_Precincts.geojson', function(precincts) {
                         const defaultPolygonColors = {
-                            fillColor: '#f99e1340',
-                            strokeColor: '#ef3d74',
+                            fillColor: '#00b5af20',
+                            strokeColor: '#00b5af',
                             strokeThickness: 1
+                        };
+                        const hiddenPolygonColors = {
+                            fillColor: '#0000',
+                            strokeColor: '#0000',
+                            strokeThickness: 0
                         };
 
                         const precinctShape = Microsoft.Maps.GeoJson.read(precincts, {
-                            polygonOptions: defaultPolygonColors
+                            polygonOptions: hiddenPolygonColors
                         });
                         //map.entities.push(shape);
                         precinctLayer.add(precinctShape);
-                        const precinctLayerPrimitives = precinctLayer.getPrimitives();
+                        let precinctLayerPrimitives = precinctLayer.getPrimitives();
                         precinctLayerPrimitives.map(function(precinct) {
 
-                            Microsoft.Maps.Events.addHandler(precinct, 'mouseover', function(e) {
-                                //precinct.setOptions({ fillColor: 'rgba(0,0,0,.2)' });
-                            });
-
-
-                            Microsoft.Maps.Events.addHandler(precinct, 'mouseout', function(e) {
-                                //precinct.setOptions(defaultPolygonColors);
-                            });
                             let precinctMapPDF = `https://home.bexar.org/electionsResources/precincts/vp_{4054}.pdf`;
 
                             Microsoft.Maps.Events.addHandler(precinct, 'click', function() {
@@ -578,15 +577,17 @@
                             });
 
                             Microsoft.Maps.Events.addHandler(precinct, 'mousedown', function() {
+                                /*
                                 precinct.setOptions({
                                     fillColor: 'rgba(255,255,255,.5)',
                                     strokeColor: 'black',
                                     strokeThickness: 1
                                 });
+                                */
                             });
 
                             Microsoft.Maps.Events.addHandler(precinct, 'mouseup', function() {
-                                precinct.setOptions(defaultPolygonColors);
+                                //precinct.setOptions(defaultPolygonColors);
                             });
 
                         });
@@ -632,7 +633,7 @@
 
                                 $('#precinctRoute').append(precinctLI);
 
-                                bindInput(precinctLI.find('input'), precinctLayerPrimitives, SpatialMath, directionsManager);
+                                bindInput(precinctLI.find('input'), precinctLayerPrimitives, SpatialMath);
                                 precinctLI.find('.remove-this-precinct').click(function() {
                                     precinctLI.remove();
                                     $('#precinctRouteContainer').addClass('collapsed');
@@ -641,48 +642,41 @@
                             }
                         });
 
-                        bindInput($('.precinct-search'), precinctLayerPrimitives, SpatialMath, directionsManager);
+                        bindInput($('.precinct-search'), precinctLayerPrimitives, SpatialMath);
 
-                    });
+                        $('#optimizeRoute').click(function() {
+                            if (selectedPrecinctsMetadata.length > 1) {
+                                directionsManager.clearAll();
 
-                    $.getJSON('Redistricted_Council_Districts_2022.geojson', function(districts) {
-                        const transparency = '80';
-                        const fillColors = {
-                            "1": "#f1d8ff",
-                            "2": "#aff8df",
-                            "3": "#ffe5b2",
-                            "4": "#d8e4ff",
-                            "5": "#e6d0c5",
-                            "6": "#fffed8",
-                            "7": "#ffb2b2",
-                            "8": "#e5fed8",
-                            "9": "#66cbb4",
-                            "10": "#66cbf0"
-                        };
+                                selectedPrecinctsMetadata.map(function(p) {
+                                    let loc = new Microsoft.Maps.Location(p.location.latitude, p.location.longitude);
+                                    let wp = new Microsoft.Maps.Directions.Waypoint({ location: loc });
+                                    directionsManager.addWaypoint(wp);
+                                });
 
-                        const districtShape = Microsoft.Maps.GeoJson.read(districts, {
-                            polygonOptions: {
-                                fillColor: 'rgba(0,0,0,0)',
-                                strokeColor: 'rgba(0,0,0,0)',
-                                strokeThickness: 5
+                                //routeAvoidance: [Microsoft.Maps.Directions.RouteAvoidance.avoidLimitedAccessHighway]
+                                directionsManager.setRequestOptions({
+                                    distanceUnit: Microsoft.Maps.Directions.DistanceUnit.mi,
+                                    routeOptimization: Microsoft.Maps.Directions.RouteOptimization.shortestDistance
+                                });
+
+
+                                //Make the route line thick and green. Replace the title of waypoints with an empty string to hide the default text that appears.
+                                directionsManager.setRenderOptions({
+                                    drivingPolylineOptions: {
+                                        strokeColor: '#f99e13',
+                                        strokeThickness: 2
+                                    },
+                                    waypointPushpinOptions: {
+                                        title: ''
+                                    }
+                                });
+
+                                //Calculate directions.
+                                directionsManager.calculateDirections();
                             }
                         });
 
-                        districtLayer.add(districtShape);
-
-                        $('#ShowDistricts').change(function() {
-                            let districtChecked = this.checked;
-                            districtLayer.getPrimitives().map(function(district) {
-                                district.setOptions({ visible: districtChecked });
-                            });
-                        });
-
-                        districtLayer.getPrimitives().map(function(district) {
-                            if (ShowDistricts.checked) {
-                                district.setOptions({ fillColor: fillColors[district.metadata.District] + transparency });
-                            }
-                        });
-                        removeLoader()
                     });
                 });
 
@@ -697,8 +691,7 @@
         });
 
 
-        function bindInput(thisInput, precinctRouteArray, SM, DM) {
-            console.log(DM)
+        function bindInput(thisInput, precinctRouteArray, SM) {
 
             thisInput.focus(function() {
                 $('#precinctRouteContainer').removeClass('collapsed');
@@ -716,12 +709,18 @@
                 $('#precinctRouteSuggest').empty();
                 let thisVal = thisInput.val();
                 if (thisVal != '') {
-                    precinctRouteArray.filter(x => filterPrecinctPrimitive(x, thisVal)).map(function(precinct) {
+
+                    let selectedPrecincts = $('.precinct-search').filter(function() { return !$(this).is(thisInput); }).get().map(function(i) { return i.value; });
+
+                    precinctRouteArray.filter(x => filterPrecinctPrimitive(x, thisVal, selectedPrecincts)).map(function(precinct) {
                         let suggestionButton = $(`<button class="list-group-item list-group-item-action">${precinct.metadata.NAME}</button>`);
 
                         $('#precinctRouteSuggest').append(suggestionButton);
 
                         suggestionButton.click(function() {
+                            //precinctRouteArray.map(x => x.isSelected = false);
+                            selectedPrecinctsMetadata = [];
+
                             thisInput.val(precinct.metadata.NAME);
                             let precinctCenter = precinct.geometry.boundingBox.center;
 
@@ -730,8 +729,15 @@
 
 
                             let calculateDistancesSetup = $('.precinct-search').map(function(i) {
+                                selectedPrecinctsMetadata.push(this.metadata);
                                 return this.metadata;
                             }).get();
+
+                            precinct.setOptions({
+                                fillColor: '#0000',
+                                strokeColor: '#ef3d74',
+                                strokeThickness: 2
+                            });
 
 
                             //calculateDistancesSetup.pop();
@@ -746,47 +752,31 @@
 
                             $('#precinctResults').empty();
                             calculateDistancesSetup.map(function(p) {
-                                let wp = new Microsoft.Maps.Directions.Waypoint({ location: p.location })
-                                DM.addWaypoint(wp);
 
                                 if (p.distanceFromPrevious > 0) {
 
+
+                                    let distanceCard = $(`<div class="card my-2">
+                                        <div class="card-body py-0 text-muted">
+                                            <small>${p.distanceFromPrevious.toFixed(2)} miles</small>
+                                        </div>
+                                    </div>`);
+                                    $('#precinctResults').append(distanceCard);
                                 }
 
                                 let precinctResultCard = $(`<div class="card">
                                         <div class="card-body">
-                                            <h5 class="card-title">{this.metadata.NAME}</h5>
-                                            <p class="card-text">{JSON.stringify(this.metadata.location, null, 4)}</p>
+                                            <h5 class="card-title">${p.NAME}</h5>
+                                            <p class="card-text">${JSON.stringify(p.location, null, 4)}</p>
                                         </div>
                                     </div>`);
+
+                                $('#precinctResults').append(precinctResultCard);
                             });
 
-                            console.log(calculateDistancesSetup)
+
 
                             $('#precinctRouteSuggest').empty();
-
-
-                            //Set the request options that avoid highways and uses kilometers.
-                            DM.setRequestOptions({
-                                distanceUnit: Microsoft.Maps.Directions.DistanceUnit.mi
-
-                            });
-
-                            //routeAvoidance: [Microsoft.Maps.Directions.RouteAvoidance.avoidLimitedAccessHighway]
-
-                            //Make the route line thick and green. Replace the title of waypoints with an empty string to hide the default text that appears.
-                            DM.setRenderOptions({
-                                drivingPolylineOptions: {
-                                    strokeColor: 'green',
-                                    strokeThickness: 6
-                                },
-                                waypointPushpinOptions: {
-                                    title: ''
-                                }
-                            });
-
-                            //Calculate directions.
-                            DM.calculateDirections();
 
 
                             if ($('.precinct-search').map(function(precinctInput) { return $(this).val(); }).get().length > 1) {
@@ -835,20 +825,22 @@
                 $('#addPrecinct').removeAttr('disabled');
             }
         }
+
         function encodeSVG(data) {
             let symbols = /[\r\n%#()<>?[\\\]^`{|}]/g;
             data = data.replace(/"/g, `'`);
             data = data.replace(/>\s{1,}</g, `><`);
             data = data.replace(/\s{2,}/g, ` `);
-            let escaped = data.replace(symbols, encodeURIComponent)
+            let escaped = data.replace(symbols, encodeURIComponent);
 
 
             return `background-image: url("data:image/svg+xml,${escaped}");`;
         }
 
-        function filterPrecinctPrimitive(precinctPrimitive, searchVal) {
+        function filterPrecinctPrimitive(precinctPrimitive, searchVal, selectedPrcts) {
+            let pctName = precinctPrimitive.metadata.NAME;
             let r = new RegExp(searchVal, 'gi');
-            return precinctPrimitive.metadata.NAME.match(r) != null;
+            return pctName.match(r) != null && !selectedPrcts.includes(pctName);
         }
 
 
