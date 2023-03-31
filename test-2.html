@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+
+    <title>3</title>
+
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+
+        :root {
+            --teal: #00b5af;
+            --primary: #00b5af;
+            --pink: #ef3d74;
+            --gold: #f99e13;
+            --dark: #212529;
+            --dark-grey: #404041;
+            --primary-text: #fff;
+        }
+
+        #storeLocator {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #controls {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            padding: 1rem;
+        }
+
+        #controls .card {
+            background-color: #fff;
+            box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+        }
+
+        #controls .backdrop {
+            position: absolute;
+            background-color: #000;
+            opacity: 0.2;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            height: 100%;
+            left: 0px;
+            top: 0px;
+        }
+
+        .loading-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(5px);
+            background-color: #00000080;
+            background: linear-gradient(-45deg, #ee775280, #e73c7e80, #23a6d580, #23d5ab80);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            z-index: 1100;
+            top: 0px;
+            left: 0px;
+        }
+
+        .loading-container:after {
+            content: ' ';
+            position: absolute;
+            top: calc(50% - 2.5rem);
+            left: calc(50% - 2.5rem);
+            display: inline-block;
+            width: 5rem;
+            height: 5rem;
+            border: .25em solid #ffffff;
+            border-right-color: transparent;
+            border-radius: 50%;
+            -webkit-animation: 2s linear infinite spinner-border;
+            animation: 2s linear infinite spinner-border;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+    <style id="routeSVGStyle">
+
+    </style>
+</head>
+
+<body>
+
+    <div id="storeLocator">
+
+    </div>
+
+    <div id="controls">
+        <div class="backdrop d-none"></div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#optionsPanel" aria-controls="optionsPanel">
+                            precinct search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingContainer" class="loading-container d-none"></div>
+
+    <div id="infoboxHTML">
+        <div class="card d-none">
+            <div class="card-body">
+                <h5 class="card-title">Card Title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" id="getDirections">Go somewhere</a>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script src="js/bundle.js"></script>
+
+    <script>
+
+
+
+        const BingMapsMasterKey = 'AoZktRDf56_rJu2MkwaO2mUnOLn5FgKAd5o4V5KKhWzK85flP9UhKcKljSL1a6qL';
+        //const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+        const dataSource = 'https://gis-bexar.opendata.arcgis.com/datasets/Bexar::bexar-county-voter-precincts/about';
+        const SanAntonio = {
+            "__type": "Location:http://schemas.microsoft.com/search/local/ws/rest/v1",
+            "bbox": [
+                29.075069427490234,
+                -99.14065551757812,
+                29.76782989501953,
+                -97.85380554199219
+            ],
+            "name": "San Antonio, TX",
+            "point": {
+                "type": "Point",
+                "coordinates": [
+                    29.4251709,
+                    -98.49461365
+                ]
+            },
+            "address": {
+                "adminDistrict": "TX",
+                "adminDistrict2": "Bexar County",
+                "countryRegion": "United States",
+                "formattedAddress": "San Antonio, TX",
+                "locality": "San Antonio"
+            },
+            "confidence": "High",
+            "entityType": "PopulatedPlace",
+            "geocodePoints": [
+                {
+                    "type": "Point",
+                    "coordinates": [
+                        29.4251709,
+                        -98.49461365
+                    ],
+                    "calculationMethod": "Rooftop",
+                    "usageTypes": [
+                        "Display"
+                    ]
+                }
+            ],
+            "matchCodes": [
+                "Good"
+            ],
+            "center": {
+                "latitude": 29.4251709,
+                "longitude": -98.49461365,
+                "altitude": 0,
+                "altitudeReference": -1
+            }
+
+        }
+
+        $(window).on('load', function() {
+
+
+            $(document).click(function(e) {
+                if (e.target.closest('#precinctRouteMenu') == null && e.target != ellipsesDropdown && e.target != precinctRouteOptionsBtn) {
+                    $('#precinctRouteMenu').addClass('d-none');
+                }
+            });
+
+            let tapHold = false;
+            let timeoutId;
+            let multiSelectArray = [];
+
+            document.addEventListener('touchstart', function(e) {
+                tapHold = true;
+                //console.log(e.timeStamp)
+                timeoutID = setTimeout(() => {
+                    console.log('selected');
+                }, 500);
+            });
+
+            document.addEventListener('touchend', function(e) {
+                tapHold = false;
+                clearTimeout(timeoutID);
+            });
+            function latOffset(coords, offset) {
+                let l = coords.latitude;
+                coords.latitude = l + offset;
+                return coords;
+            }
+
+            const mapTypes = ["aerial", "canvasDark", "canvasLight", "birdseye", "grayscale", "mercator", "ordnanceSurvey", "road", "streetside"];
+
+            const map = new Microsoft.Maps.Map('#storeLocator', {
+                credentials: BingMapsMasterKey,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                minZoom: 4,
+                maxZoom: 17,
+                center: latOffset(SanAntonio.center, 0.06),
+                //showDashboard: false,
+                mapTypeId: Microsoft.Maps.MapTypeId.grayscale,
+                supportedMapTypes: mapTypes.map(mt => Microsoft.Maps.MapTypeId[mt]),
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.minified,
+                navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                zoom: 11
+            });
+
+            const districtLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(districtLayer);
+
+            const precinctLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(precinctLayer);
+
+            map.getCredentials(function(sessionKey) {
+
+                let infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                    htmlContent: $('#infoboxHTML').html()
+                });
+
+                infobox.setMap(map);
+
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.Search'], function() {
+                    removeLoader();
+
+                    //'Microsoft.Maps.AutoSuggest',
+
+                    //const autosuggestManager = new Microsoft.Maps.AutosuggestManager(map);
+                    const searchManager = new Microsoft.Maps.Search.SearchManager(map);
+
+                    Microsoft.Maps.Events.addHandler(map, 'click', function(e) {
+                        //console.log(e.location)
+                        let searchRequest = {
+                            location: e.location,
+                            includeEntityTypes: ['Address', 'Neighborhood'],
+                            callback: function(r) {
+                                //Tell the user the name of the result.
+                                console.log(r);
+                                console.log(r.name);
+                                console.log(r.address.locality);
+                                let googleURL = `https://maps.google.com/?q=${r.name}`.replace(/\s/g, '+');
+                                $('#infoboxHTML')
+                                $('#getDirections').attr('href', googleURL);
+                                $('#getDirections').html(r.name + '<i class="fa fa-external-link ms-2" aria-hidden="true"></i>');
+
+                                infobox.setOptions({
+                                    location: r.location,
+                                    visible: true
+                                });
+                            }
+                        };
+                        searchManager.reverseGeocode(searchRequest);
+                    });
+
+                    console.log('bobloblaw')
+
+                    //autosuggestManager.attachAutosuggest('#searchBox', '#searchBoxContainer', function(autosuggestResult) {map.setView({bounds: autosuggestResult.bestView});});
+
+                    $('#searchBox').attr('style', '');
+
+                    $.getJSON('Bexar_County_Voter_Precincts.geojson', function(precincts) {
+                        const defaultPolygonColors = {
+                            fillColor: '#00b5af20',
+                            strokeColor: '#00b5af',
+                            strokeThickness: 1
+                        };
+
+                        const precinctShape = Microsoft.Maps.GeoJson.read(precincts, {
+                            polygonOptions: defaultPolygonColors
+                        });
+                        //map.entities.push(shape);
+                        precinctLayer.add(precinctShape);
+                        const precinctLayerPrimitives = precinctLayer.getPrimitives();
+
+                        precinctLayerPrimitives.map(function(precinct) {
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseover', function(e) {
+                                //precinct.setOptions({ fillColor: 'rgba(0,0,0,.2)' });
+                            });
+
+
+                            Microsoft.Maps.Events.addHandler(precinct, 'mouseout', function(e) {
+                                //precinct.setOptions(defaultPolygonColors);
+                            });
+
+                            let precinctMapPDF = `https://home.bexar.org/electionsResources/precincts/vp_{4054}.pdf`;
+
+                            //Microsoft.Maps.Events.addHandler(precinct, 'click', function() {
+                            Microsoft.Maps.Events.addOne(precinct, 'click', function() {
+                                //$('#pre').html(JSON.stringify(precinct.metadata, null, 4));
+                                unfocusPrecincts();
+                                map.setView({ bounds: precinct.geometry.boundingBox });
+                                precinct.setOptions({
+                                    fillColor: '#0000',
+                                    strokeColor: '#00b5af',
+                                    strokeThickness: 1
+                                });
+                            });
+                            /*
+                                Microsoft.Maps.Events.addHandler(precinct, 'mousedown', function() {
+                                    precinct.setOptions({
+                                        fillColor: 'rgba(255,255,255,.5)',
+                                        strokeColor: 'black',
+                                        strokeThickness: 1
+                                    });
+                                });
+                            
+                                Microsoft.Maps.Events.addHandler(precinct, 'mouseup', function() {
+                                    precinct.setOptions(defaultPolygonColors);
+                                });
+                            */
+                        });
+                        function hidePrecincts() {
+                            precinctLayerPrimitives.map(function(p) {
+                                p.setOptions({
+                                    fillColor: '#0000',
+                                    strokeColor: '#0000',
+                                    strokeThickness: 0
+                                });
+                            });
+                        }
+                        function unfocusPrecincts() {
+                            precinctLayerPrimitives.map(function(p) {
+                                p.setOptions({
+                                    fillColor: '#ccc',
+                                    strokeThickness: 0
+                                });
+                            });
+                        }
+                    });
+                });
+
+                function removeLoader() {
+                    if (districtLayer.getPrimitives().length > 0 && precinctLayer.getPrimitives().length > 0) {
+                        $('#loadingContainer').remove();
+                    }
+                }
+            });
+
+
+        });
+
+        function filterPrecinctPrimitive(precinctPrimitive, searchVal) {
+            let r = new RegExp(searchVal, 'gi');
+            return precinctPrimitive.metadata.NAME.match(r) != null;
+        }
+
+
+    </script>
+
+</body>
+
+</html>
