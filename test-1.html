@@ -747,7 +747,7 @@
                             $('#precinctResults').empty();
                             calculateDistancesSetup.map(function(p) {
                                 let wp = new Microsoft.Maps.Directions.Waypoint({ location: p.location })
-                                directionsManager.addWaypoint(wp);
+                                DM.addWaypoint(wp);
 
                                 if (p.distanceFromPrevious > 0) {
 
@@ -767,7 +767,7 @@
 
 
                             //Set the request options that avoid highways and uses kilometers.
-                            directionsManager.setRequestOptions({
+                            DM.setRequestOptions({
                                 distanceUnit: Microsoft.Maps.Directions.DistanceUnit.mi
 
                             });
@@ -775,7 +775,7 @@
                             //routeAvoidance: [Microsoft.Maps.Directions.RouteAvoidance.avoidLimitedAccessHighway]
 
                             //Make the route line thick and green. Replace the title of waypoints with an empty string to hide the default text that appears.
-                            directionsManager.setRenderOptions({
+                            DM.setRenderOptions({
                                 drivingPolylineOptions: {
                                     strokeColor: 'green',
                                     strokeThickness: 6
@@ -786,7 +786,7 @@
                             });
 
                             //Calculate directions.
-                            directionsManager.calculateDirections();
+                            DM.calculateDirections();
 
 
                             if ($('.precinct-search').map(function(precinctInput) { return $(this).val(); }).get().length > 1) {
