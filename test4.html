@@ -10,180 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     <title>4</title>
 
-    <style>
-        body,
-        html {
-            height: 100%;
-        }
 
-        :root {
-            --teal: #00b5af;
-            --primary: #00b5af;
-            --pink: #ef3d74;
-            --gold: #f99e13;
-            --dark: #212529;
-            --dark-grey: #404041;
-            --primary-text: #fff;
-        }
-
-        #storeLocator {
-            width: 100vw;
-            height: 100vh;
-        }
-
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .loading-container {
-            background-color: transparent;
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            background-color: #00b5af40;
-            backdrop-filter: blur(5px);
-            z-index: 1100;
-            top: 0px;
-            left: 0px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loading-svg-container {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-        }
-
-        .loading-text {
-            text-transform: uppercase;
-            font-family: 'Montserrat', sans-serif;
-            color: #49494a;
-            font-size: 25px;
-            width: 150px;
-        }
-
-        .loading-text:after {
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: bottom;
-            -webkit-animation: ellipsis steps(4, end) 1500ms infinite;
-            animation: ellipsis steps(4, end) 1500ms infinite;
-            content: "\2026";
-            /* ascii code for the ellipsis character */
-            width: 0px;
-        }
-
-        @keyframes ellipsis {
-            to {
-                width: 1.25em;
-            }
-        }
-
-        @-webkit-keyframes ellipsis {
-            to {
-                width: 1.25em;
-            }
-        }
-
-        #searchTab>li {
-            flex-grow: 1;
-            flex-basis: 0;
-        }
-
-        #searchTab>li button {
-            width: 100%;
-        }
-
-        .spikeRollLoader {
-            position: relative;
-            width: 85px;
-            height: 50px;
-            background-repeat: no-repeat;
-            background-image: linear-gradient(#00b5af 50px, transparent 0),
-                linear-gradient(#ef3d74 50px, transparent 0),
-                linear-gradient(#f99e13 50px, transparent 0),
-                linear-gradient(#f99e13 50px, transparent 0),
-                linear-gradient(#ef3d74 50px, transparent 0),
-                linear-gradient(#00b5af 50px, transparent 0);
-            background-position: 0px center, 15px center, 30px center, 45px center, 60px center, 75px center, 90px center;
-            animation: rikSpikeRoll 0.65s linear infinite alternate;
-            z-index: 9999;
-        }
-
-        @keyframes rikSpikeRoll {
-            0% {
-                background-size: 10px 3px;
-            }
-
-            16% {
-                background-size: 10px 50px, 10px 3px, 10px 3px, 10px 3px, 10px 3px, 10px 3px
-            }
-
-            33% {
-                background-size: 10px 30px, 10px 50px, 10px 3px, 10px 3px, 10px 3px, 10px 3px
-            }
-
-            50% {
-                background-size: 10px 10px, 10px 30px, 10px 50px, 10px 3px, 10px 3px, 10px 3px
-            }
-
-            66% {
-                background-size: 10px 3px, 10px 10px, 10px 30px, 10px 50px, 10px 3px, 10px 3px
-            }
-
-            83% {
-                background-size: 10px 3px, 10px 3px, 10px 10px, 10px 30px, 10px 50px, 10px 3px
-            }
-
-            100% {
-                background-size: 10px 3px, 10px 3px, 10px 3px, 10px 10px, 10px 30px, 10px 50px
-            }
-        }
-
-        .position-relative {
-            position: relative !important;
-        }
-
-        #precinctSearchResults {
-            position: absolute;
-            width: 100%;
-        }
-
-        #showNearbyPrecincts:not(:checked)~label:before {
-            content: 'Show';
-        }
-
-        #showNearbyPrecincts:checked~label:before {
-            content: 'Hide';
-        }
-
-        #showAllPrecincts:not(:checked)~label:before {
-            content: 'Show';
-        }
-
-        #showAllPrecincts:checked~label:before {
-            content: 'Hide';
-        }
-    </style>
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
-        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
     <style id="routeSVGStyle">
 
     </style>
@@ -347,17 +175,14 @@
         const SanAntonio = {
             "__type": "Location:http://schemas.microsoft.com/search/local/ws/rest/v1",
             "bbox": [
-                29.075069427490234,
-                -99.14065551757812,
-                29.76782989501953,
-                -97.85380554199219
+                29.075069427490234, -99.14065551757812,
+                29.76782989501953, -97.85380554199219
             ],
             "name": "San Antonio, TX",
             "point": {
                 "type": "Point",
                 "coordinates": [
-                    29.4251709,
-                    -98.49461365
+                    29.4251709, -98.49461365
                 ]
             },
             "address": {
@@ -369,19 +194,16 @@
             },
             "confidence": "High",
             "entityType": "PopulatedPlace",
-            "geocodePoints": [
-                {
-                    "type": "Point",
-                    "coordinates": [
-                        29.4251709,
-                        -98.49461365
-                    ],
-                    "calculationMethod": "Rooftop",
-                    "usageTypes": [
-                        "Display"
-                    ]
-                }
-            ],
+            "geocodePoints": [{
+                "type": "Point",
+                "coordinates": [
+                    29.4251709, -98.49461365
+                ],
+                "calculationMethod": "Rooftop",
+                "usageTypes": [
+                    "Display"
+                ]
+            }],
             "matchCodes": [
                 "Good"
             ],
@@ -415,9 +237,13 @@
         function setUserPin(l) {
             if (userLocationLayer) {
                 userLocationLayer.clear();
-                let pin = new Microsoft.Maps.Pushpin(l, { title: 'My Location' });
+                let pin = new Microsoft.Maps.Pushpin(l, {
+                    title: 'My Location'
+                });
                 userLocationLayer.add(pin);
-                Microsoft.Maps.Events.addHandler(pin, 'click', function() { pushPinOnClick(pin); });
+                Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                    pushPinOnClick(pin);
+                });
             }
         }
 
@@ -486,12 +312,18 @@
                 setUserPin(userLocation);
 
                 $(gotoMyLocation).click(function() {
-                    map.setView({ center: userLocation, zoom: 19 });
+                    map.setView({
+                        center: userLocation,
+                        zoom: 19
+                    });
                     setUserPin(userLocation);
                 });
 
                 $(showFullCity).click(function() {
-                    map.setView({ center: latOffset(SanAntonio.center, 0.06), zoom: 11 });
+                    map.setView({
+                        center: latOffset(SanAntonio.center, 0.06),
+                        zoom: 11
+                    });
                 });
 
                 let infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
@@ -535,12 +367,18 @@
                         };
 
                         autosuggestManager.attachAutosuggest('#addressSearchBox', '#addressSearchBoxContainer', function(autosuggestResult) {
-                            map.setView({ bounds: autosuggestResult.bestView });
+                            map.setView({
+                                bounds: autosuggestResult.bestView
+                            });
                             //.map(x => x.metadata.NAME)
                             radialSearchLocation = autosuggestResult.location;
-                            let pin = new Microsoft.Maps.Pushpin(autosuggestResult.location, { title: autosuggestResult.title });
+                            let pin = new Microsoft.Maps.Pushpin(autosuggestResult.location, {
+                                title: autosuggestResult.title
+                            });
                             pushpinLayer.add(pin);
-                            Microsoft.Maps.Events.addHandler(pin, 'click', function() { pushPinOnClick(pin); });
+                            Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                pushPinOnClick(pin);
+                            });
                         });
 
                         $(addressSearchBox).on('search', function() {
@@ -570,11 +408,16 @@
                                 let containingPrecinct = precinctLayerPrimitives.filter(function(p) {
                                     return SpatialMath.Geometry.contains(p, r.location);
                                 })[0];
-                                let pin = new Microsoft.Maps.Pushpin(r.location, { title: r.name, subTitle: `Precinct: ${precinctName(containingPrecinct)}` });
+                                let pin = new Microsoft.Maps.Pushpin(r.location, {
+                                    title: r.name,
+                                    subTitle: `Precinct: ${precinctName(containingPrecinct)}`
+                                });
                                 pushpinLayer.add(pin);
 
 
-                                Microsoft.Maps.Events.addHandler(pin, 'click', function() { pushPinOnClick(pin); });
+                                Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                    pushPinOnClick(pin);
+                                });
                                 let googleURL = `https://maps.google.com/?q=${r.name}`.replace(/\s/g, '+');
                                 $('#infoboxHTML')
                                 $('#getDirections').attr('href', googleURL);
@@ -607,12 +450,16 @@
                                     });
                                     let precinctsConvexHull = SpatialMath.Geometry.convexHull(filteredPrecincts);
 
-                                    map.setView({ bounds: precinctsConvexHull.geometry.boundingBox });
+                                    map.setView({
+                                        bounds: precinctsConvexHull.geometry.boundingBox
+                                    });
                                 } else {
                                     orderedPrecincts.filter((x, y) => y > 0).map(function(precinct) {
                                         precinct.setOptions(hiddenPolygonColors);
                                     });
-                                    map.setView({ bounds: orderedPrecincts[0].geometry.boundingBox });
+                                    map.setView({
+                                        bounds: orderedPrecincts[0].geometry.boundingBox
+                                    });
                                 }
                             }
                         });
@@ -642,11 +489,17 @@
 
                             let closestPrecinct = orderedPrecincts[0];
                             let outlinedPrecinct = precinctLayer.getPrimitives().filter(x => x.isOutlined)[0];
-                            map.setView({ bounds: closestPrecinct.geometry.boundingBox });
-                            let pin = new Microsoft.Maps.Pushpin(closestPrecinct.geometry.boundingBox.center, { title: precinctName(closestPrecinct) });
+                            map.setView({
+                                bounds: closestPrecinct.geometry.boundingBox
+                            });
+                            let pin = new Microsoft.Maps.Pushpin(closestPrecinct.geometry.boundingBox.center, {
+                                title: precinctName(closestPrecinct)
+                            });
                             pin.for = 'closestPrecinct';
                             pushpinLayer.add(pin);
-                            Microsoft.Maps.Events.addHandler(pin, 'click', function() { pushPinOnClick(pin); });
+                            Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                pushPinOnClick(pin);
+                            });
                             closestPrecinct.setOptions(highlightPolygonColors);
                             closestPrecinct.isOutlined = true;
                             let maxDistance = Math.max.apply(null, orderedPrecincts.filter((x, i) => i < 12).map(x => x.distanceToRadialSearch));
@@ -677,9 +530,13 @@
                                         precinctResultButton.click(function() {
                                             $(precinctSearchResults).empty();
                                             precinctLayerPrimitive.setOptions(highlightPolygonColors);
-                                            let pin = new Microsoft.Maps.Pushpin(precinctLayerPrimitive.geometry.boundingBox.center, { title: pName });
+                                            let pin = new Microsoft.Maps.Pushpin(precinctLayerPrimitive.geometry.boundingBox.center, {
+                                                title: pName
+                                            });
                                             pushpinLayer.add(pin)
-                                            Microsoft.Maps.Events.addHandler(pin, 'click', function() { pushPinOnClick; });
+                                            Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                                pushPinOnClick;
+                                            });
 
                                             map.setView({
                                                 bounds: precinctLayerPrimitive.geometry.boundingBox
@@ -695,7 +552,9 @@
                             let precinctMapPDF = `https://home.bexar.org/electionsResources/precincts/vp_{4054}.pdf`;
 
                             Microsoft.Maps.Events.addHandler(precinct, 'click', function(e) {
-                                autosuggestManager.setOptions({ userLocation: precinct.geometry.boundingBox.center });
+                                autosuggestManager.setOptions({
+                                    userLocation: precinct.geometry.boundingBox.center
+                                });
                                 searchRequest.location = e.location;
                                 searchManager.reverseGeocode(searchRequest);
                             });
@@ -729,6 +588,7 @@
                                 });
                             });
                         }
+
                         function unfocusPrecincts() {
                             precinctLayerPrimitives.map(function(p) {
                                 p.setOptions({
@@ -754,6 +614,7 @@
         function pushPinOnClick(pin) {
             console.log(pin)
         }
+
         function filterPrecinctPrimitive(precinctPrimitive, searchVal) {
             let r = new RegExp(searchVal, 'gi');
             return precinctPrimitive.metadata.NAME.match(r) != null;
@@ -769,6 +630,7 @@
         function precinctName(precinct) {
             return precinct.metadata.NAME;
         }
+
         function compareObjects(obj1, obj2) {
             let arr1 = Object.keys(obj1);
             let arr2 = Object.keys(obj2);
@@ -787,7 +649,6 @@
             }
             return true
         }
-
     </script>
 
 </body>
