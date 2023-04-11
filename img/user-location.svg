@@ -1,10 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" version="1.1">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" width="48" height="48" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
   <defs>
-    <filter id="f3" x="0" y="0" width="150%" height="150%">
-      <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3" />
-      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="2" />
-      <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    <filter id="drop-shadow-1" filterUnits="userSpaceOnUse">
+      <feOffset dx="1.5" dy="1.5"/>
+      <feGaussianBlur result="blur" stdDeviation="2.5"/>
+      <feFlood flood-color="#160e03" flood-opacity=".5"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
     </filter>
   </defs>
-   <circle cx="10" cy="10" r="8" stroke="black" stroke-width="1" fill="#f99e13" filter="url(#f3)"/>
+  <circle cx="10.5" cy="10.5" r="8" fill="#f99e1340" stroke="#f99e13" stroke-width=".5" filter="url(#drop-shadow-1)" />
+  <circle cx="10.5" cy="10.5" r="3" fill="#f99e13" stroke="#212529" stroke-miterlimit="10" stroke-width=".5"/>
+
 </svg>
