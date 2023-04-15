@@ -1,31 +1,47 @@
-body,
-html {
-	height: 100%;
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Roboto+Condensed:wght@300;400&family=Roboto:wght@300;400&display=swap');
 :root {
 	--teal: #00b5af;
 	--primary: #00b5af;
 	--pink: #ef3d74;
 	--gold: #f99e13;
 	--dark: #212529;
+	--text: #212529;
 	--dark-grey: #404041;
 	--medium-grey: #777777;
 	--light-grey: #e6e7e8;
 	--grey-10: #f4f6f8;
 	--primary-text: #ffffff;
-}
-h1,
-h2,
-.user-location-text {
-	font-family: 'Montserrat', sans-serif;
+	--semi-transparent: #ffffffc0;
 }
 
-#gotoMyLocation {
+body,
+html {
+	height: 100%;
+	font-family: 'Roboto', sans-serif;
+	color: var(--text);
+}
+
+h1,
+h2,
+h3,
+strong,
+b,
+.bold .user-location-text {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	color: var(--text);
+}
+
+h1 {
+	font-weight: 900;
+}
+
+.floating-action-btn {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: var(--primary);
+	/*color: var(--primary);*/
+	color: var(--dark-grey);
 	background-color: var(--grey-10);
 	border: 1px solid var(--grey-10);
 	box-shadow: 0 1px 4px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
@@ -33,8 +49,83 @@ h2,
 	height: 50px;
 	border-radius: 50px;
 	position: absolute;
+}
+.btn {
+	font-family: 'Roboto Condensed', sans-serif;
+	font-weight: 100;
+}
+
+#controls {
+	background-color: var(--semi-transparent);
+	backdrop-filter: blur(2px);
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	padding: 0.5rem;
+	box-shadow: 0 1px 4px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+}
+
+#gotoMyLocation {
 	right: 16px;
 	top: -66px;
+}
+
+#resetMap {
+	font-size: 12px;
+	right: 16px;
+	top: -132px;
+}
+
+#focusItemInfo {
+	border-bottom: 1px solid var(--light-grey);
+	display: flex;
+	flex-direction: column;
+}
+
+#focusItemInfoHandle {
+	background-color: var(--light-grey);
+	border-radius: 2px;
+	height: 4px;
+	width: 10%;
+}
+
+#focusItemPanel {
+	/*
+	height: 200px;
+	min-height: 200px;
+	*/
+	transition: height 0.15s ease-out;
+	position: relative;
+	box-shadow: 0 -1px 4px rgba(60, 64, 67, 0.3);
+}
+
+#focusItemPanelHorizontalBtnContainer {
+	position: relative;
+	overflow-x: scroll;
+}
+
+#focusItemPanelHorizontalBtnContainer > div:first-child {
+	z-index: -100;
+	visibility: hidden;
+	pointer-events: none;
+	padding: 1rem;
+}
+
+#focusItemPanelHorizontalBtns {
+	position: absolute;
+	top: 0px;
+	display: flex;
+	padding: 1rem;
+}
+
+#focusItemPanelHorizontalBtns button {
+	white-space: nowrap;
+	margin-right: 0.5rem;
+}
+
+#focusItemPanel.maximizing {
+	height: 100vh;
 }
 
 #minorLoader {

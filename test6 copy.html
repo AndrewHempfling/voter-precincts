@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="/favicon.svg">
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/precincts.css">
+    <link href="css/fontawesome-free-5.15.4-web/css/fontawesome.min.css" rel="stylesheet">
+    <link href="css/fontawesome-free-5.15.4-web/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <title>6</title>
+</head>
+
+<body>
+    <div style="height: 100vh; width: 100vw; display: flex; flex-direction: column;">
+        <div id="storeLocator" style="flex: 1 1 0;">
+
+        </div>
+        <div id="focusItemPanel">
+            <button class="btn floating-action-btn" type="button" id="resetMap"><i class="fas fa-redo"></i></button>
+
+            <button class="btn floating-action-btn" type="button" id="gotoMyLocation">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20">
+                    <path
+                        d="m19.6196,9h-2.6992c-.4395-3.0636-2.8569-5.4811-5.9204-5.9205V.38c0-.209-.1714-.38-.3804-.38h-1.2397c-.209,0-.3799.171-.3799.38v2.6995c-3.064.4394-5.481,2.8569-5.9204,5.9205H.3799c-.209,0-.3799.171-.3799.38v1.2399c0,.209.1709.3801.3799.3801h2.6997c.4395,3.0635,2.8564,5.4811,5.9204,5.9205v2.6995c0,.209.1709.3801.3799.3801h1.2397c.209,0,.3804-.171.3804-.3801v-2.6995c3.0635-.4394,5.481-2.8569,5.9204-5.9205h2.6992c.209,0,.3804-.171.3804-.3801v-1.2399c0-.209-.1714-.38-.3804-.38Zm-9.6196,6.5c-3.0376,0-5.5-2.4625-5.5-5.5s2.4624-5.5,5.5-5.5,5.5,2.4624,5.5,5.5-2.4624,5.5-5.5,5.5Z"
+                        fill="currentColor" />
+                    <path d="m10,7c-1.6571,0-3,1.3431-3,3s1.3429,3,3,3,3-1.3432,3-3-1.3433-3-3-3Zm0,4.4062c-.7767,0-1.4062-.6296-1.4062-1.4062s.6295-1.4062,1.4062-1.4062,1.4062.6296,1.4062,1.4062-.6298,1.4062-1.4062,1.4062Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+            <div id="focusItemInfo" style="background-color: #ffffff; padding-bottom:50px; width: 100%;  font-size: .75rem;">
+                <h2 id="activeLocation">My Location</h2>
+                <button class="btn btn-primary" type="button" id="findClosestPrecinct">Show nearby precincts</button>
+                <div>Relative to <span id="closestToWhich"></span></div>
+                <div id="activeDetails"></div>
+                <div id="withinPrecinct"></div>
+                <div class="addressLine"></div>
+                <div class="adminDistrict"></div>
+                <div class="countryRegion"></div>
+                <div class="district"></div>
+                <div class="formattedAddress"></div>
+                <div class="locality"></div>
+                <div class="postalCode"></div>
+                <div>show info on click</div>
+                <ul>
+                    <li>
+                        precinct to precinct search
+                    </li>
+                    <li>
+                        search for address within precinct
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="controls" style="background-color: #ef3d7420;position: fixed; top: 0px; left: 0px; width: 100%;">
+        <div>
+            <div id="addressSearchBoxContainer">
+                <input type="text" id="addressSearchBox" class="form-control" placeholder="Address search">
+            </div>
+            <div id="precinctSearchBoxContainer">
+                <input type="search" id="precinctSearchBox" class="form-control" placeholder="Precinct search">
+                <div class="position-relative">
+                    <div id="precinctSearchResults">
+
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-primary" type="button" id="showFullCity">Show full city</button>
+                <input type="checkbox" id="showAllPrecincts" hidden>
+                <label class="btn btn-primary" disabled type="button" for="showAllPrecincts" id="showAllPrecinctsLabel"> all precincts</label>
+            </div>
+
+            <div>
+
+            </div>
+            <!-- 
+             <ul class="nav nav-tabs" id="searchTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="addressSearch-tab" data-bs-toggle="tab" data-bs-target="#addressSearch" type="button" role="tab" aria-controls="addressSearch" aria-selected="true">Address</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="precinctSearch-tab" data-bs-toggle="tab" data-bs-target="#precinctSearch" type="button" role="tab" aria-controls="precinctSearch" aria-selected="false">Precinct</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="searchTabContent">
+                <div class="tab-pane fade show active" id="addressSearch" role="tabpanel" aria-labelledby="addressSearch-tab">
+                    ...
+                </div>
+                <div class="tab-pane fade" id="precinctSearch" role="tabpanel" aria-labelledby="precinctSearch-tab">...</div>
+            </div>
+            -->
+
+
+
+        </div>
+
+    </div>
+
+    <div id="loadingContainer" class="loading-container">
+        <div class="loading-svg-container">
+            <svg id="Layer_1" data-name="Layer 1" width="75%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 757.8353 558.9187">
+                <defs>
+                    <linearGradient id="logo-gradient" x1="50%" y1="0%" x2="50%" y2="100%">
+                        <stop offset="0%" stop-color="#f99e13">
+                            <animate attributeName="stop-color" values="#f99e13; #ef3d74; #00b5af; #f99e13" dur="4s" repeatCount="indefinite"></animate>
+                        </stop>
+
+                        <stop offset="100%" stop-color="#01FF89">
+                            <animate attributeName="stop-color" values="#ef3d74; #00b5af; #f99e13; #ef3d74" dur="4s" repeatCount="indefinite"></animate>
+                        </stop>
+                    </linearGradient>
+                </defs>
+                <!--fill="url('#logo-gradient')"-->
+                <path fill="#404041"
+                    d="m0,499.5081c6.7435-.3248,12.3873-.8426,18.0244-.7776,3.4947.0402,5.4166-1.1705,6.8985-4.3182,10.1335-21.5259,20.3578-43.0097,30.6719-64.4498,11.195-23.2714,23.1962-46.0941,38.2815-67.1508,15.4835-21.6124,18.7296-46.4098,17.403-71.8972-.8977-17.2482-3.2627-34.4836-6.0379-51.5511-2.3602-14.5155,2.2136-24.5806,13.9676-33.4647,44.9411-33.9681,93.1974-62.4376,143.4071-87.6364,14.7057-7.3804,22.4694-19.4429,27.0999-33.864,2.6483-8.248,3.2974-17.333,3.6472-26.0891,1.091-27.3086,14.7596-42.7501,45.1813-49.4205,9.2045-2.0182,18.575-1.9948,27.694.7201,3.1214.9293,6.0273,2.6842,8.9119,4.2788,2.6406,1.4597,4.9666,1.9349,7.0004-.8566,11.9393-16.3878,35.2778-17.1392,50.7865-3.2664,3.4058,3.0465,5.945,2.8206,9.0015.165,1.1309-.9825,2.2974-1.9243,3.4259-2.9095,9.0855-7.933,18.058-7.8368,27.2685.1103,3.7752,3.2573,7.6323,6.4724,11.7512,9.2651,5.2226,3.541,10.8596,4.4013,17.0907,2.1372,6.864-2.494,13.186-.9858,18.2222,4.4851,5.9711,6.4865,9.2492,14.127,9.3588,23.042.2476,20.1211,7.5114,30.4619,27.1912,35.7474,23.153,6.2184,46.3744,12.1108,68.3422,21.8959,15.0417,6.7001,29.8774,13.8631,44.7947,20.8415,1.3542.6335,2.6142,1.465,3.9472,2.1472,17.3972,8.9025,24.6887,23.5314,23.8388,42.5868-.6974,15.6381-1.2811,31.2985-2.6528,46.884-1.1954,13.5817-3.6759,27.0453-5.1355,40.61-2.512,23.3449-3.7197,46.8736-7.2642,70.0513-3.1519,20.6116,2.3556,39.0791,10.4644,57.0492,8.4075,18.6317,18.1917,36.6415,27.3749,54.9229,5.8253,11.5968,11.9118,23.0728,17.3519,34.8476,2.184,4.7269,4.3921,6.6523,9.9851,6.0283,10.5708-1.1793,13.1175,2.8348,7.9726,12.1247-35.5718,64.2307-112.5039,71.6406-157.9296,37.3733-6.922-5.2217-12.6709-12.2092-18.2093-18.9954-4.9858-6.1091-8.9377-13.063-13.6617-20.1163,1.2915-.1954,1.9378-.4703,2.502-.3523,9.7445,2.0389,13.5384-3.4066,17.2604-11.5567,14.6293-32.0323,33.4205-61.7673,52.8037-91.0647,16.7291-25.286,25.4333-53.23,27.2918-83.0198,2.1148-33.8934,2.5113-67.8976,3.4154-101.8601.1806-6.7841-.7317-13.596-1.1142-20.3966-.6408-11.3908-6.5503-19.5254-16.3318-24.5706-6.8996-3.5587-14.1697-6.7401-21.6301-8.7995-16.502-4.5551-33.1416-8.7194-49.9053-12.1655-6.8843-1.4152-14.2614-1.0406-21.3635-.6194-7.7443.4593-12.2483,4.7926-13.1854,12.5742-.6077,5.0474-.6585,10.4218.3937,15.3613,3.2825,15.4097-.2644,29.7784-5.6964,43.9127-6.9198,18.0056-14.8316,35.6638-20.9988,53.9172-10.7659,31.8651-16.1426,64.912-18.42,98.4141-1.1402,16.7748-1.591,33.6074-1.9086,50.4222-.1379,7.299.9627,14.614,1.2943,21.9311.5558,12.2596-5.5435,17.7269-17.8735,16.2196-5.0807-.6211-8.6689-3.9548-9.1651-10.8438-.7626-10.587-.9832-21.2715-.4987-31.872.409-8.9513,2.087-17.85,3.3097-26.7574,2.0679-15.0625.1913-29.9714-2.1735-44.7653-3.4582-21.6347-1.7259-42.7639,4.0553-63.7867,8.2464-29.9869,16.1644-60.0641,24.2714-90.0895,1.9896-7.3691,4.844-14.5729,6.1084-22.0544,2.145-12.6933-3.6533-22.0317-15.6272-26.8799-10.5449-4.2695-21.6878-4.8553-32.865-5.1446-6.823-.1766-13.6463-.3643-20.4706-.4724-4.083-.0647-8.1535.6862-8.7233,5.5273-1.3604,11.5562-2.7653,23.1472-3.2002,34.7598-.3642,9.7266,4.9441,17.6813,10.1274,25.5717,3.902,5.9399,7.2546,12.2784,10.3624,18.6774.7831,1.6124-.3093,4.1364-.5398,6.2415-2.1358-.4315-4.8726-.173-6.2997-1.4178-5.2481-4.5772-10.5196-9.2762-14.9236-14.636-5.5779-6.7886-12.0284-10.8409-20.8569-12.3274-4.92-.8283-10.2473-3.5126-13.8582-6.9652-7.7913-7.4497-16.2743-8.92-25.6794-5.0226-10.1296,4.1976-19.8779,9.3073-29.9178,13.7347-5.3067,2.3403-10.7846,4.4109-16.3575,5.9973-6.5515,1.8648-10.4861.4987-12.2776-3.3647-1.9844-4.2794-.3632-8.9465,4.5245-13.034.4954-.4142.9795-.8419,1.8783-1.616-1.7241-.5735-3.0813-.9489-4.3765-1.4768-1.36-.5546-2.6606-1.2553-4.7305-2.249,1.8734-2.5106,3.3077-4.8657,5.1546-6.8328,7.9316-8.4471,14.7666-17.5606,18.8113-28.5825.7857-2.1408,2.3079-4.033,3.6135-5.9562,2.5666-3.7805,5.4398-5.6103,9.8778-2.2258,1.5874,1.2106,4.068,1.2473,6.1395,1.8247,3.4976.9749,6.6361,1.7206,8.2818,6.0427,1.6734,4.3947,6.5543,2.8613,9.7434,2.0292,3.7881-.9884,6.9603-1.0419,10.5364.5084,1.6422.712,4.0167.5789,5.7914.0031,12.3804-4.0159,23.258-10.6325,32.549-19.7551,1.6364-1.6069,3.0239-3.5867,4.1052-5.6185,3.6643-6.8851.7577-12.7719-6.9405-13.9641-5.7537-.8912-11.5589-1.455-17.3456-2.1252-5.8995-.6832-11.3433-2.2971-15.8429-6.5214-4.4547-4.1823-9.5759-5.4884-15.6557-3.54-18.8024,6.0256-37.2159,12.8386-52.1517,26.3747-13.4238,12.1658-22.5568,27.0145-26.3923,44.8732-2.122,9.8803-.4687,19.209,4.7086,27.8746,1.5347,2.5688,3.0275,5.241,4.9966,7.4597,16.757,18.8798,25.8731,41.6652,33.6936,65.1661,8.897,26.7359,17.107,53.64,19.1732,81.9432,1.5872,21.7423,1.1762,43.4072-7.3811,63.9161-2.5843,6.1938-6.6069,11.8945-10.5988,17.3619-3.8379,5.2564-9.8293,5.5844-18.6408,2.0629-5.3899-2.1541-5.7854-6.5146-5.5489-11.5239.848-17.9555,1.8996-35.9167,2.0965-53.8842.3013-27.4966-8.4617-53.0682-17.9166-78.4074-8.5474-22.907-17.2956-45.7405-25.6378-68.7219-2.3741-6.5404-3.7267-13.4622-5.3944-20.2469-2.8901-11.7577-9.8932-16.2939-21.414-12.6836-6.9329,2.1725-13.421,5.7549-20.1308,8.653-21.8284,9.428-43.3581,19.6622-65.6098,27.9561-14.9455,5.5705-21.4473,15.7677-22.0041,30.403-.4739,12.4549.4545,24.9637.7741,37.4482.516,20.1487.5143,40.3279,1.6856,60.4386,1.8182,31.2169,9.0331,61.5269,16.8315,91.7034,4.163,16.1096,8.0013,32.3057,11.7622,48.5148.8917,3.8431,2.0734,5.8607,6.5564,4.887,4.6955-1.0198,9.538-1.454,14.3404-1.8517,2.6041-.2158,5.3205-.1338,7.8753.3733,3.4007.6749,4.6124,3.0912,3.5281,6.4067-.6692,2.0458-1.3815,4.1269-2.4298,5.9921-36.0858,64.1981-112.3177,70.1878-156.6148,37.7708-3.8795-2.8391-7.5147-6.074-10.9406-9.4526-2.7108-2.6735-5.1279-5.7079-7.3205-8.8317-4.8557-6.9177-9.4881-13.9924-14.8111-21.8931Zm147.5597-6.8223c0-1.507.0835-1.8584-.0118-2.1516-8.5028-26.1506-15.0079-52.7859-19.9397-79.8423-1.947-10.681-5.4904-20.941-12.0639-29.848-4.8242-6.5366-8.5493-6.8569-13.3513-.5331-3.5018,4.6115-6.7002,9.5828-9.2248,14.7867-16.0404,33.0634-31.8593,66.2344-47.7265,99.3817-.3956.8264-.5073,1.7888-.9382,3.3756,34.697-1.7369,68.883-3.4482,103.2562-5.1689Zm522.6279-121.0843c-.6534-.1285-1.3068-.257-1.9602-.3854-22.722,37.5518-44.7218,75.4943-62.507,117.217,38.576-1.9458,76.1359-3.8403,114.4337-5.7721-.8865-2.7275-1.2107-4.3414-1.9079-5.7735-6.7579-13.8824-13.1794-27.9488-20.4791-41.5422-9.6899-18.0447-19.6213-35.9023-24.3614-56.0866-.6242-2.6578-2.1239-5.1098-3.2182-7.6572ZM432.9196,69.4647c.206.0193.4119.0386.6179.0579-.2012,3.1588-.5443,6.3161-.5776,9.4767-.1155,10.972,2.6986,20.5353,13.3832,25.883,6.9478,3.4774,13.1793,1.3561,15.203-5.8129,3.9267-13.9104,7.9129-27.867,10.5897-42.0473,2.08-11.0193,1.8209-22.3739-5.441-32.1022-5.1694-6.925-11.5893-7.967-18.7334-3.1465-7.3946,4.9894-11.0828,12.4356-12.3638,20.8887-1.3433,8.8658-1.8216,17.8629-2.6779,26.8025Zm-49.3204-6.1628c.8815,6.5049,1.0607,11.2143,2.2242,15.6661,2.0355,7.7882,7.6507,10.5421,15.3278,8.204,6.4071-1.951,11.4339-5.7607,13.8628-11.9854,3.7931-9.7207,7.6791-19.4932,10.2489-29.5698,1.4653-5.7464,1.0984-12.2362.2731-18.2138-.8199-5.9365-5.2003-9.3701-11.3524-10.239-10.5797-1.4943-21.0611,4.7537-24.6661,16.6423-3.0576,10.0831-4.2293,20.7385-5.9182,29.4955Zm-61.1175,4.3184c0,.9973-.0372,1.9961.006,2.9915.3191,7.3613,1.2637,14.731,8.9355,18.1118,7.6259,3.3607,14.1919-.1694,20.2138-4.8195.3938-.3041.7577-.6483,1.1254-.9847,8.7643-8.0183,12.9064-18.5375,14.7767-29.7872,1.7887-10.7589-4.1519-20.9753-12.9706-24.6601-7.2608-3.0338-16.3827.3582-23.5778,8.8071-1.0756,1.2629-2.0383,2.6237-3.0271,3.9586-5.8885,7.9487-4.6611,17.3775-5.4819,26.3826Zm191.8116.918l-.9297-.1093c-.2535-4.151-.0217-8.4047-.8726-12.4294-1.326-6.2717-2.8783-12.5975-5.3106-18.4978-1.6788-4.0724-5.4847-6.8243-10.4439-6.1863-4.6235.5948-6.9509,4.2036-7.8554,8.1091-3.7467,16.1779-7.2852,32.41-10.5193,48.6979-1.2003,6.0444,1.8536,10.5479,7.1422,13.5993,11.1925,6.4578,22.228,2.1256,25.8589-11.0854,1.9509-7.098,2.015-14.7151,2.9304-22.098Z" />
+
+            </svg>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <h2 class="loading-text">Loading</h2>
+        </div>
+        <div class="spikeRollLoader"></div>
+    </div>
+
+    <div id="infoboxHTML" class="d-none">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Card Title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" id="getDirections">Go somewhere</a>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="minorLoader" class="d-none">
+        <div class="spinner-border text-danger" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script>
+        let myLocation;
+        let radialSearchLocation;
+        let orderedPrecincts;
+        let watchPositionID;
+        let myLocationLayer;
+        let searchManager;
+        let searchRequest;
+
+        const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+        const SanAntonio = {
+            __type: 'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+            bbox: [29.075069427490234, -99.14065551757812, 29.76782989501953, -97.85380554199219],
+            name: 'San Antonio, TX',
+            point: {
+                type: 'Point',
+                coordinates: [29.4251709, -98.49461365],
+            },
+            address: {
+                adminDistrict: 'TX',
+                adminDistrict2: 'Bexar County',
+                countryRegion: 'United States',
+                formattedAddress: 'San Antonio, TX',
+                locality: 'San Antonio',
+            },
+            confidence: 'High',
+            entityType: 'PopulatedPlace',
+            geocodePoints: [
+                {
+                    type: 'Point',
+                    coordinates: [29.4251709, -98.49461365],
+                    calculationMethod: 'Rooftop',
+                    usageTypes: ['Display'],
+                },
+            ],
+            matchCodes: ['Good'],
+            center: {
+                latitude: 29.4251709,
+                longitude: -98.49461365,
+                altitude: 0,
+                altitudeReference: -1,
+            },
+        };
+
+        myLocation = new n(SanAntonio.center);
+        $(closestToWhich).html('my location');
+        radialSearchLocation = new n(SanAntonio.center);
+        const SanAntonioVisualCenter = {
+            latitude: 29.4251709 + 0.06,
+            longitude: -98.49461365,
+            altitude: 0,
+            altitudeReference: -1,
+        };
+        //let id =
+        //clearWatch(watchPositionID)
+
+        watchPositionID = navigator.geolocation.watchPosition(
+            function(pos) {
+                myLocation = new n(pos.coords);
+                radialSearchLocation = new n(pos.coords);
+                //myLocation = new n(SanAntonio.center);
+                //radialSearchLocation = new n(SanAntonio.center);
+                setUserPin(myLocation);
+            },
+            null,
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 1000,
+            }
+        );
+
+        function setUserPin(l) {
+            if (myLocationLayer) {
+                myLocationLayer.clear();
+                let pin = new Microsoft.Maps.Pushpin(l, {
+                    //text: 'My Location',
+                    icon: 'img/user-location.svg',
+                    anchor: new Microsoft.Maps.Point(10.5, 10.5),
+                    //textOffset: new Microsoft.Maps.Point(0, -5),
+                });
+                myLocationLayer.add(pin);
+                Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                    pushPinOnClick(pin);
+                });
+
+                $(activeLocation).html('My location');
+                $(activeDetails).html(`${l.latitude}, ${l.longitude}`);
+            }
+        }
+
+        $(window).on('load', function() {
+            $(document).click(function(e) {
+                /*if (e.target.closest('#precinctRouteMenu') == null && e.target != ellipsesDropdown && e.target != precinctRouteOptionsBtn) {
+                    $('#precinctRouteMenu').addClass('d-none');
+                }*/
+                //console.log(e.target)
+                /*if (e.target.closest('#precinctRouteMenu') == null && e.target != ellipsesDropdown && e.target != precinctRouteOptionsBtn) {
+                    $('#precinctRouteMenu').addClass('d-none');
+                }*/
+            });
+
+            let tapHold = false;
+            let timeoutId;
+            let multiSelectArray = [];
+
+            document.addEventListener('touchstart', function(e) {
+                tapHold = true;
+                //console.log(e.timeStamp)
+                timeoutId = setTimeout(() => {
+                    //console.log('selected');
+                }, 500);
+            });
+
+            document.addEventListener('touchend', function(e) {
+                tapHold = false;
+                clearTimeout(timeoutId);
+            });
+
+            const mapTypes = ['aerial', 'canvasDark', 'canvasLight', 'birdseye', 'grayscale', 'mercator', 'ordnanceSurvey', 'road', 'streetside'];
+
+            const map = new Microsoft.Maps.Map('#storeLocator', {
+                //center: SanAntonioVisualCenter,
+                center: myLocation,
+                credentials: BingMapsMasterKey,
+                enableClickableLogo: false,
+                liteMode: true,
+                mapTypeId: Microsoft.Maps.MapTypeId.ordnanceSurvey,
+                minZoom: 4,
+                maxZoom: 17,
+                showBreadcrumb: false,
+                showDashboard: false,
+                showScalebar: false,
+                showTermsLink: false,
+                //supportedMapTypes: mapTypes.map(mt => Microsoft.Maps.MapTypeId[mt]),
+                //zoom: 11,
+                zoom: 19,
+            });
+
+            const precinctLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(precinctLayer);
+
+            myLocationLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(myLocationLayer);
+
+            const pushpinLayer = new Microsoft.Maps.Layer();
+            map.layers.insert(pushpinLayer);
+
+            map.getCredentials(function(sessionKey) {
+                setUserPin(myLocation);
+
+                $(gotoMyLocation).click(function() {
+                    map.setView({
+                        center: myLocation,
+                        zoom: 19,
+                    });
+                    setUserPin(myLocation);
+                    $(activeLocation).html('My location');
+
+                    if (searchManager && searchRequest) {
+                        searchRequest.location = myLocation;
+                        searchManager.reverseGeocode(searchRequest);
+                    } else {
+                        $(activeDetails).html(`${l.latitude}, ${l.longitude}`);
+                    }
+                });
+
+                $(showFullCity).click(function() {
+                    map.setView({
+                        center: SanAntonioVisualCenter,
+                        zoom: 11,
+                    });
+                });
+
+                let infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                    //htmlContent: $('#infoboxHTML').html(),
+                    visible: false,
+                });
+                infobox.setMap(map);
+
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath', 'Microsoft.Maps.Search', 'Microsoft.Maps.AutoSuggest'], function() {
+                    removeLoader();
+                    $('.bm_bottomLeftOverlay').html(`<div class="CopyrightContainer quadrantOverride multiLine" style="flex-direction: column; text-align: left;"><div class="CopyrightControl" ><span class="ShadowTextDark"><span class="CopyrightAttributionStyle">© 2023 TomTom, © 2023 Microsoft Corporation</span><a class="copyrightLink ShadowTextDark" style="pointer-events: auto; display: none;"></a></span></div><div id="TermsLinkContainer" class="TermsLinkContainer" style="text-align: left; float: left;"><a class="ShadowTextDark" href="https://www.microsoft.com/maps/assets/docs/terms.aspx" title="Terms" target="mc_bingMaps" style="pointer-events: auto">Terms</a></div></div>`);
+                    $('.bm_bottomRightOverlay').remove();
+                    //.remove();
+
+                    //'Microsoft.Maps.AutoSuggest',
+
+                    const autosuggestManager = new Microsoft.Maps.AutosuggestManager(map);
+                    const SpatialMath = Microsoft.Maps.SpatialMath;
+                    searchManager = new Microsoft.Maps.Search.SearchManager(map);
+
+                    $.getJSON('Bexar_County_Voter_Precincts.geojson', function(precincts) {
+                        const defaultPolygonColors = {
+                            visible: true,
+                            fillColor: '#00b5af20',
+                            strokeColor: '#00b5af',
+                            strokeThickness: 1,
+                        };
+
+                        const hiddenPolygonColors = {
+                            visible: false,
+                        };
+
+                        const outlinePolygonColors = {
+                            visible: true,
+                            fillColor: '#00000000',
+                            strokeColor: '#ef3d74',
+                            strokeThickness: 2,
+                        };
+
+                        const highlightPolygonColors = {
+                            visible: true,
+                            fillColor: '#00000000',
+                            strokeColor: '#f99e13',
+                            strokeThickness: 3,
+                            //secondaryStrokeColor: '#f99e13',
+                            //secondaryStrokethickness: 3,
+                        };
+
+                        autosuggestManager.attachAutosuggest('#addressSearchBox', '#addressSearchBoxContainer', function(autosuggestResult) {
+                            map.setView({
+                                bounds: autosuggestResult.bestView,
+                            });
+
+                            radialSearchLocation = autosuggestResult.location;
+
+                            $(closestToWhich).html(autosuggestResult.title);
+
+                            let pin = new Microsoft.Maps.Pushpin(autosuggestResult.location, {
+                                title: autosuggestResult.title,
+                            });
+
+                            pushpinLayer.add(pin);
+
+                            Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                pushPinOnClick(pin);
+                            });
+                        });
+
+                        $('#addressSearchBox').attr('style', '');
+
+                        $(addressSearchBox).on('search', function() {
+                            radialSearchLocation = myLocation;
+                            $(closestToWhich).html('my location');
+                        });
+
+                        const precinctShape = Microsoft.Maps.GeoJson.read(precincts, {
+                            polygonOptions: hiddenPolygonColors,
+                        });
+
+                        precinctLayer.add(precinctShape);
+
+                        const precinctLayerPrimitives = precinctLayer.getPrimitives();
+
+                        $(showAllPrecinctsLabel).removeAttr('disabled');
+
+                        searchRequest = {
+                            includeEntityTypes: ['Address', 'Neighborhood'],
+                            callback: function(result) {
+                                let resultAddress = result.address;
+
+                                let containingPrecinct = precinctLayerPrimitives.filter(function(p) {
+                                    return SpatialMath.Geometry.contains(p, result.location);
+                                })[0];
+
+                                if (containingPrecinct) {
+                                    let pin = new Microsoft.Maps.Pushpin(result.location, {
+                                        title: result.name,
+                                        subTitle: `Precinct: ${precinctName(containingPrecinct)}`,
+                                    });
+
+                                    pushpinLayer.add(pin);
+
+                                    Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                        pushPinOnClick(pin);
+                                    });
+                                    $(withinPrecinct).html(`Precinct ${precinctName(containingPrecinct)}`);
+                                } else {
+                                    $(withinPrecinct).html('This location is not within the bounds of a San Antonio precinct');
+                                }
+
+                                Object.keys(resultAddress).map(function(key) {
+                                    $(`.${key}`).html(resultAddress[key]);
+                                });
+
+                                let googleURL = `https://maps.google.com/?q=${result.name}`.replace(/\s/g, '+');
+
+                                $('#getDirections').attr('href', googleURL);
+                                $('#getDirections').html(result.name + '<i class="fa fa-external-link ms-2" aria-hidden="true"></i>');
+                                infobox.setOptions({
+                                    location: result.location,
+                                    //visible: true,
+                                });
+
+                                $(closestToWhich).html(result.address.addressLine);
+                            },
+                        };
+
+                        Microsoft.Maps.Events.addHandler(map, 'click', function(e) {
+                            //$(minorLoader).removeClass('d-none');
+                            searchRequest.location = e.location;
+                            radialSearchLocation = searchRequest.location;
+                            searchManager.reverseGeocode(searchRequest);
+                            //$(minorLoader).addClass('d-none');
+                        });
+
+                        $(showAllPrecincts).change(function() {
+                            let precinctColors = defaultPolygonColors;
+                            precinctColors.visible = this.checked;
+                            precinctLayerPrimitives.map(x => x.setOptions(precinctColors));
+                        });
+
+                        $(precinctSearchBox).on('input', function() {
+                            $(precinctSearchResults).empty();
+                            let thisVal = $(this).val().replace(/\D/g, '');
+                            $(this).val(thisVal);
+                            if (thisVal != '') {
+                                let precinctArray = orderedPrecincts || precinctLayerPrimitives;
+                                precinctArray
+                                    .filter(function(p) {
+                                        let pName = precinctName(p);
+                                        let r = new RegExp('^' + thisVal);
+                                        return pName.match(r) != null;
+                                    })
+                                    .sort((a, b) => parseInt(precinctName(a)) - parseInt(precinctName(b)))
+                                    .filter((x, i) => i < 9)
+                                    .map(function(precinctLayerPrimitive) {
+                                        let pName = precinctName(precinctLayerPrimitive);
+                                        let precinctResultButton = $(`<button type="button" class="list-group-item list-group-item-action">${pName}</button>`);
+                                        $(precinctSearchResults).append(precinctResultButton);
+
+                                        precinctResultButton.click(function() {
+                                            $(precinctSearchResults).empty();
+                                            precinctLayerPrimitive.setOptions(outlinePolygonColors);
+                                            let pin = new Microsoft.Maps.Pushpin(precinctLayerPrimitive.geometry.boundingBox.center, {
+                                                title: pName,
+                                            });
+                                            pushpinLayer.add(pin);
+                                            Microsoft.Maps.Events.addHandler(pin, 'click', function() {
+                                                pushPinOnClick;
+                                            });
+
+                                            map.setView({
+                                                bounds: precinctLayerPrimitive.geometry.boundingBox,
+                                            });
+                                        });
+                                    });
+                            }
+                        });
+
+                        precinctLayerPrimitives.map(function(thisPrecinct) {
+                            let precinctMapPDF = `https://home.bexar.org/electionsResources/precincts/vp_{4054}.pdf`;
+
+                            Microsoft.Maps.Events.addHandler(thisPrecinct, 'click', function(e) {
+                                //$(minorLoader).removeClass('d-none');
+                                highlightPrecinct(thisPrecinct);
+                                let thisPrecinctBounds = thisPrecinct.geometry.boundingBox;
+                                let thisPrecinctCenter = thisPrecinctBounds.center;
+                                //$(minorLoader).addClass('d-none');
+
+                                searchRequest.location = e.location;
+                                searchManager.reverseGeocode(searchRequest);
+                            });
+                        });
+
+                        $(findClosestPrecinct).click(function() {
+                            console.log(radialSearchLocation);
+                            pushpinLayer.clear();
+                            orderedPrecincts = calculateDistanceFromRadialSearch(radialSearchLocation);
+                            let closestPrecinct = orderedPrecincts[0];
+
+                            highlightPrecinct(closestPrecinct);
+
+                            //$(precinctRadius).attr('max', Math.round(maxDistance * 100));
+                            //console.log(SpatialMath.Geometry.shortestLineTo(radialSearchLocation, precinctLayerPrimitives));
+                        });
+
+                        $(resetMap).click(function() {
+                            $('#controls input[type="checkbox"]').prop('checked', false);
+                            hidePrecincts();
+                            pushpinLayer.clear();
+                            map.setView({
+                                center: SanAntonioVisualCenter,
+                                zoom: 11,
+                            });
+                            infobox.setOptions({
+                                visible: false,
+                            });
+                        });
+
+                        function highlightPrecinct(precinct) {
+                            let precinctBounds = precinct.geometry.boundingBox;
+                            let precinctCenter = precinctBounds.center;
+                            map.setView({ bounds: precinctBounds });
+
+                            autosuggestManager.setOptions({
+                                userLocation: precinctCenter,
+                            });
+
+                            if (!orderedPrecincts || !compareObjects(precinct, orderedPrecincts[0])) {
+                                orderedPrecincts = calculateDistanceFromRadialSearch(precinctCenter);
+                            }
+
+                            let pin = new Microsoft.Maps.Pushpin(precinctCenter, {
+                                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="30" version="1.1">
+                            <rect width="100" height="30" stroke="none" fill="none"/>
+                                <style>
+                                        text {
+                                                font: bold 24px Helvetica, Arial, sans-serif;
+                                        }
+                                </style>
+                                <text text-anchor="start" x="0" y="24" fill="#404041">${precinctName(precinct)}</text>
+                            </svg>`,
+                            });
+
+                            pushpinLayer.add(pin);
+                            precinctLayer.getPrimitives().map(function(p) {
+                                let isOutlined = p._options.strokeColor == outlinePolygonColors.strokeColor;
+                                p.setOptions(hiddenPolygonColors);
+                                if (isOutlined) {
+                                    p.setOptions({ strokeColor: outlinePolygonColors.strokeColor });
+                                }
+                            });
+
+                            let nearbyPrecincts = orderedPrecincts.filter((x, y) => y < 10);
+
+                            nearbyPrecincts.map(function(nearbyPrecinct) {
+                                //precinct.setOptions(hiddenPolygonColors);
+                                if (compareObjects(precinct, nearbyPrecinct)) {
+                                    nearbyPrecinct.setOptions(highlightPolygonColors);
+                                } else {
+                                    nearbyPrecinct.setOptions(outlinePolygonColors);
+                                }
+                            });
+                            let precinctsConvexHull = SpatialMath.Geometry.convexHull(nearbyPrecincts);
+
+                            map.setView({
+                                bounds: precinctsConvexHull.geometry.boundingBox,
+                            });
+
+                            infobox.setOptions({
+                                location: precinctCenter,
+                                visible: false,
+                                htmlContent: null,
+                                title: precinctName(precinct),
+                            });
+                        }
+
+                        function calculateDistanceFromRadialSearch(precinctRadialSearch) {
+                            return precinctLayerPrimitives
+                                .map(function(precinct) {
+                                    precinct.distanceToRadialSearch = SpatialMath.Geometry.distance(precinctRadialSearch, precinct, SpatialMath.DistanceUnits.Miles);
+                                    return precinct;
+                                })
+                                .sort((a, b) => a.distanceToRadialSearch - b.distanceToRadialSearch);
+                        }
+
+                        function hidePrecincts() {
+                            precinctLayerPrimitives.map(function(p) {
+                                p.setOptions({
+                                    visible: false,
+                                });
+                            });
+                        }
+
+                        function unfocusPrecincts() {
+                            precinctLayerPrimitives.map(function(p) {
+                                p.setOptions({
+                                    fillColor: '#ccc',
+                                    strokeThickness: 0,
+                                });
+                            });
+                        }
+                        removeLoader();
+                    });
+                });
+
+                function removeLoader() {
+                    if (precinctLayer.getPrimitives().length > 0) {
+                        $('#loadingContainer').remove();
+                    }
+                }
+            });
+        });
+
+        function pushPinOnClick(pin) {
+            console.log(pin);
+        }
+
+        function filterPrecinctPrimitive(precinctPrimitive, searchVal) {
+            let r = new RegExp(searchVal, 'gi');
+            return precinctPrimitive.metadata.NAME.match(r) != null;
+        }
+
+        function n(obj) {
+            this.latitude = obj.latitude || obj.Latitude;
+            this.longitude = obj.longitude || obj.Longitude;
+            this.altitude = obj.altitude || 0;
+            this.altitudeReference = obj.altitudeReference || -1;
+        }
+
+        function precinctName(precinct) {
+            return precinct.metadata.NAME;
+        }
+
+        function compareObjects(obj1, obj2) {
+            let arr1 = Object.keys(obj1);
+            let arr2 = Object.keys(obj2);
+            for (i = 0; i < arr1.length; i++) {
+                let a1 = arr1[i];
+                if (obj1[a1] != obj2[a1]) {
+                    return false;
+                }
+            }
+            for (i = 0; i < arr2.length; i++) {
+                let a2 = arr1[i];
+                if (obj2[a2] != obj1[a2]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+    </script>
+</body>
+
+</html>

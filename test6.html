@@ -13,42 +13,64 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    <title>5</title>
+    <title>6</title>
 </head>
 
 <body>
-    <div id="storeLocator">
+    <div style="height: 100vh; width: 100vw; display: flex; flex-direction: column;">
+        <div id="storeLocator" style="flex: 1 1 0;">
 
+        </div>
+        <div id="focusItemPanel">
+            <button class="btn floating-action-btn" type="button" id="resetMap"><i class="fas fa-redo"></i></button>
+
+            <button class="btn floating-action-btn" type="button" id="gotoMyLocation">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20">
+                    <path
+                        d="m19.6196,9h-2.6992c-.4395-3.0636-2.8569-5.4811-5.9204-5.9205V.38c0-.209-.1714-.38-.3804-.38h-1.2397c-.209,0-.3799.171-.3799.38v2.6995c-3.064.4394-5.481,2.8569-5.9204,5.9205H.3799c-.209,0-.3799.171-.3799.38v1.2399c0,.209.1709.3801.3799.3801h2.6997c.4395,3.0635,2.8564,5.4811,5.9204,5.9205v2.6995c0,.209.1709.3801.3799.3801h1.2397c.209,0,.3804-.171.3804-.3801v-2.6995c3.0635-.4394,5.481-2.8569,5.9204-5.9205h2.6992c.209,0,.3804-.171.3804-.3801v-1.2399c0-.209-.1714-.38-.3804-.38Zm-9.6196,6.5c-3.0376,0-5.5-2.4625-5.5-5.5s2.4624-5.5,5.5-5.5,5.5,2.4624,5.5,5.5-2.4624,5.5-5.5,5.5Z"
+                        fill="currentColor" />
+                    <path d="m10,7c-1.6571,0-3,1.3431-3,3s1.3429,3,3,3,3-1.3432,3-3-1.3433-3-3-3Zm0,4.4062c-.7767,0-1.4062-.6296-1.4062-1.4062s.6295-1.4062,1.4062-1.4062,1.4062.6296,1.4062,1.4062-.6298,1.4062-1.4062,1.4062Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+            <div id="focusItemInfo" class="p-3">
+                <div class="d-flex justify-content-center align-items-center pb-2">
+                    <div id="focusItemInfoHandle"></div>
+                </div>
+
+                <h3 id="activeLocation" class="mb-0">My Location</h3>
+                <small id="withinPrecinct"></small>
+                <!--
+                <small id="activeDetails" class="text-muted"></small>
+                <div class="formattedAddress"></div>
+                <div class="addressLine"></div>
+                <div class="adminDistrict"></div>
+                <div class="countryRegion"></div>
+                <div class="district"></div>
+                <div class="locality"></div>
+                <div class="postalCode"></div>
+                <div>Relative to <span id="closestToWhich"></span></div>
+                -->
+            </div>
+            <div id="focusItemPanelHorizontalBtnContainer" class="position-relative" style="overflow-x: scroll">
+                <div>
+                    <button class="btn " type="button">hidden Button</button>
+                </div>
+                <div id="focusItemPanelHorizontalBtns">
+                    <button class="btn btn-primary rounded-pill" type="button" id="showClosestPrecinct"><i class="fas fa-map-marker-alt me-2"></i> closest precinct</button>
+                    <button class="btn btn-primary rounded-pill" type="button" id="showNearbyPrecincts"><i class="fas fa-map-marked-alt me-2"></i> nearby precincts</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-    <div class="fixed-bottom">
-
-        <button class="btn" type="button" id="gotoMyLocation">
-            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20">
-                <path
-                    d="m19.6196,9h-2.6992c-.4395-3.0636-2.8569-5.4811-5.9204-5.9205V.38c0-.209-.1714-.38-.3804-.38h-1.2397c-.209,0-.3799.171-.3799.38v2.6995c-3.064.4394-5.481,2.8569-5.9204,5.9205H.3799c-.209,0-.3799.171-.3799.38v1.2399c0,.209.1709.3801.3799.3801h2.6997c.4395,3.0635,2.8564,5.4811,5.9204,5.9205v2.6995c0,.209.1709.3801.3799.3801h1.2397c.209,0,.3804-.171.3804-.3801v-2.6995c3.0635-.4394,5.481-2.8569,5.9204-5.9205h2.6992c.209,0,.3804-.171.3804-.3801v-1.2399c0-.209-.1714-.38-.3804-.38Zm-9.6196,6.5c-3.0376,0-5.5-2.4625-5.5-5.5s2.4624-5.5,5.5-5.5,5.5,2.4624,5.5,5.5-2.4624,5.5-5.5,5.5Z"
-                    fill="currentColor" />
-                <path d="m10,7c-1.6571,0-3,1.3431-3,3s1.3429,3,3,3,3-1.3432,3-3-1.3433-3-3-3Zm0,4.4062c-.7767,0-1.4062-.6296-1.4062-1.4062s.6295-1.4062,1.4062-1.4062,1.4062.6296,1.4062,1.4062-.6298,1.4062-1.4062,1.4062Z"
-                    fill="currentColor" />
-            </svg>
-        </button>
-        <ul style="background-color: #ffffff; margin-bottom:50px; width: 100%; font-family: monospace; font-size: .75rem;">
-            <li>
-                precinct to precinct search
-            </li>
-            <li>
-                search for address within precinct
-            </li>
-        </ul>
-    </div>
-
-    <div id="controls" style="background-color: #ef3d7420;position: fixed; top: 0px; left: 0px; width: 100%;">
+    <div id="controls">
         <div>
             <div id="addressSearchBoxContainer">
                 <input type="text" id="addressSearchBox" class="form-control" placeholder="Address search">
             </div>
-            <div id="precinctSearchBoxContainer">
+
+            <div id="precinctSearchBoxContainer" class="my-2">
                 <input type="search" id="precinctSearchBox" class="form-control" placeholder="Precinct search">
                 <div class="position-relative">
                     <div id="precinctSearchResults">
@@ -58,34 +80,11 @@
             </div>
 
             <div>
-                <button class="btn btn-primary" type="button" id="showFullCity">Show full city</button>
+                <button class="btn btn-primary btn-sm" type="button" id="showFullCity">Show full city</button>
                 <input type="checkbox" id="showAllPrecincts" hidden>
-                <label class="btn btn-primary" disabled type="button" for="showAllPrecincts" id="showAllPrecinctsLabel"> all precincts</label>
+                <label class="btn btn-primary btn-sm" disabled type="button" for="showAllPrecincts" id="showAllPrecinctsLabel"> all precincts</label>
             </div>
 
-            <div>
-                <button class="btn btn-primary" type="button" id="findClosestPrecinct">Get closest precinct to <span id="closestToWhich"></span></button>
-                <input type="checkbox" id="showNearbyPrecincts" hidden>
-                <label class="btn btn-primary d-none" type="button" id="showNearbyPrecinctsLabel" for="showNearbyPrecincts"> nearby precincts</label>
-                <button class="btn btn-primary" type="button" id="resetMap">reset map</button>
-
-            </div>
-            <!-- 
-             <ul class="nav nav-tabs" id="searchTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="addressSearch-tab" data-bs-toggle="tab" data-bs-target="#addressSearch" type="button" role="tab" aria-controls="addressSearch" aria-selected="true">Address</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="precinctSearch-tab" data-bs-toggle="tab" data-bs-target="#precinctSearch" type="button" role="tab" aria-controls="precinctSearch" aria-selected="false">Precinct</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="searchTabContent">
-                <div class="tab-pane fade show active" id="addressSearch" role="tabpanel" aria-labelledby="addressSearch-tab">
-                    ...
-                </div>
-                <div class="tab-pane fade" id="precinctSearch" role="tabpanel" aria-labelledby="precinctSearch-tab">...</div>
-            </div>
-            -->
 
 
 
@@ -119,7 +118,7 @@
         <div class="spikeRollLoader"></div>
     </div>
 
-    <div id="infoboxHTML">
+    <div id="infoboxHTML" class="d-none">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Card Title</h5>
