@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous" />
+    <title>Early Voting Places 2023</title>
+
+    <style>
+        #pollingPlacesContainer {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            left: 0px;
+            top: 0px;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #pollingPlaces {
+            flex: 1 1 0;
+            position: relative;
+        }
+
+        #searchBoxContainer {
+            position: relative;
+        }
+
+        .search-container {
+            position: fixed;
+            width: 100vw;
+            top: 0px;
+            left: 0px;
+            padding: .5rem;
+        }
+
+        #infobox .card {
+            border: none
+        }
+
+        #infobboxContainer {
+            position: relative;
+            height: 100%;
+            flex: 0;
+        }
+
+        #infobox {
+            position: relative;
+            width: 100vw;
+            height: 0px;
+            max-height: 0px;
+            overflow-y: hidden;
+            transition: height .5s ease-out;
+            box-shadow: 0 -1px 4px rgba(60, 64, 67, 0.3);
+        }
+
+        #infobox.show {
+            height: 100%;
+            overflow-y: unset;
+            max-height: 300px;
+            flex: 0;
+            padding: 1rem;
+        }
+
+        #distanceFromSearch {
+            font-size: .85em;
+        }
+
+        #distanceFromSearch::after {
+            content: ' miles';
+        }
+
+        .btn:focus {
+            box-shadow: none;
+        }
+
+        .floating-action-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #fff;
+            box-shadow: 0 1px 4px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            position: absolute;
+            bottom: 100px;
+            right: 2rem;
+        }
+
+        .floating-action-btn:focus {
+            box-shadow: 0 1px 4px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+
+
+        #pollingPlacesMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        #as_containerSearch_searchBox,
+        #searchBox+.MicrosoftMap {
+            width: 100%;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #5096C0;
+            border-color: #5096C0;
+        }
+
+        .btn-check:active+.btn-primary,
+        .btn-check:checked+.btn-primary,
+        .btn-primary.active,
+        .btn-primary:active,
+        .show>.btn-primary.dropdown-toggle {
+            color: #fff;
+            background-color: #366C87;
+            border-color: #366C87;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="pollingPlacesContainer">
+
+        <div id="pollingPlaces">
+            <div id="pollingPlacesMap">
+
+            </div>
+            <button class="btn floating-action-btn" type="button" id="gotoMyLocation">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20">
+                    <path
+                        d="m19.6196,9h-2.6992c-.4395-3.0636-2.8569-5.4811-5.9204-5.9205V.38c0-.209-.1714-.38-.3804-.38h-1.2397c-.209,0-.3799.171-.3799.38v2.6995c-3.064.4394-5.481,2.8569-5.9204,5.9205H.3799c-.209,0-.3799.171-.3799.38v1.2399c0,.209.1709.3801.3799.3801h2.6997c.4395,3.0635,2.8564,5.4811,5.9204,5.9205v2.6995c0,.209.1709.3801.3799.3801h1.2397c.209,0,.3804-.171.3804-.3801v-2.6995c3.0635-.4394,5.481-2.8569,5.9204-5.9205h2.6992c.209,0,.3804-.171.3804-.3801v-1.2399c0-.209-.1714-.38-.3804-.38Zm-9.6196,6.5c-3.0376,0-5.5-2.4625-5.5-5.5s2.4624-5.5,5.5-5.5,5.5,2.4624,5.5,5.5-2.4624,5.5-5.5,5.5Z"
+                        fill="currentColor" />
+                    <path d="m10,7c-1.6571,0-3,1.3431-3,3s1.3429,3,3,3,3-1.3432,3-3-1.3433-3-3-3Zm0,4.4062c-.7767,0-1.4062-.6296-1.4062-1.4062s.6295-1.4062,1.4062-1.4062,1.4062.6296,1.4062,1.4062-.6298,1.4062-1.4062,1.4062Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="infobox">
+
+
+
+            <div class="d-flex justify-content-end">
+                <button class="btn-close" id="closeInfobox"></button>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <h5 id="resultTitle" class="mb-0">Wonderland of The Americas</h5>
+                        <div id="distanceFromSearch">100</div>
+                        <div class="d-flex justify-content-between">
+                            <p id="directionsText">
+                                4522 Fredericksburg Rd.
+                                <br>
+                                San Antonio TX 78201e
+                            </p>
+                            <div>
+                                <a href="#" target="_blank" role="button" class="btn btn-primary">
+                                    Get directions
+                                    <i class="fa fa-external-link-square ps-2" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-container">
+        <div id="searchBoxContainer">
+            <input id="searchBox" type="text" class="form-control" placeholder="search" autocomplete="off">
+        </div>
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol"></script>
+    <script>
+
+
+
+        class n {
+            constructor(obj) {
+                this.latitude = obj.latitude || obj.Latitude;
+                this.longitude = obj.longitude || obj.Longitude;
+                this.altitude = obj.altitude || 0;
+                this.altitudeReference = obj.altitudeReference || -1;
+            }
+        }
+        let allowMyLocationOnUpdate = true;
+        let myLocationLayer;
+
+        const cities = [
+            "Castle Hills",
+            "Windcrest",
+            "Shavano Park",
+            "Converse",
+            "Universal",
+            "Helotes",
+            "San Antonio"
+        ]
+        const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+        const SanAntonio = {
+            __type: 'Location:http://schemas.microsoft.com/search/local/ws/rest/v1',
+            bbox: [29.075069427490234, -99.14065551757812, 29.76782989501953, -97.85380554199219],
+            name: 'San Antonio, TX',
+            point: {
+                type: 'Point',
+                coordinates: [29.4251709, -98.49461365],
+            },
+            address: {
+                adminDistrict: 'TX',
+                adminDistrict2: 'Bexar County',
+                countryRegion: 'United States',
+                formattedAddress: 'San Antonio, TX',
+                locality: 'San Antonio',
+            },
+            confidence: 'High',
+            entityType: 'PopulatedPlace',
+            geocodePoints: [
+                {
+                    type: 'Point',
+                    coordinates: [29.4251709, -98.49461365],
+                    calculationMethod: 'Rooftop',
+                    usageTypes: ['Display'],
+                },
+            ],
+            matchCodes: ['Good'],
+            center: {
+                latitude: 29.4251709,
+                longitude: -98.49461365,
+                altitude: 0,
+                altitudeReference: -1,
+            },
+        };
+
+        let myLocation = new n(SanAntonio.center);
+
+        //$(closestToWhich).html('my location');
+        radialSearchLocation = myLocation;
+        const SanAntonioVisualCenter = {
+            latitude: 29.4251709 + 0.06,
+            longitude: -98.49461365,
+            altitude: 0,
+            altitudeReference: -1,
+        };
+
+        setUserPin(myLocation);
+
+        watchPositionID = navigator.geolocation.watchPosition(
+            function(pos) {
+                myLocation = new n(pos.coords);
+                radialSearchLocation = new n(pos.coords);
+                //myLocation = new n(SanAntonio.center);
+                //radialSearchLocation = new n(SanAntonio.center);
+                setUserPin(myLocation);
+            },
+            null,
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 1000,
+            }
+        );
+
+
+
+        window.onload = () => {
+
+            $('#closeInfobox').click(function() {
+                clearInfoBox();
+            });
+            const map = new Microsoft.Maps.Map('#pollingPlacesMap', {
+                //center: SanAntonioVisualCenter,
+                center: myLocation,
+                credentials: BingMapsMasterKey,
+                enableClickableLogo: false,
+                liteMode: true,
+                mapTypeId: Microsoft.Maps.MapTypeId.ordnanceSurvey,
+                minZoom: 4,
+                maxZoom: 17,
+                showBreadcrumb: false,
+                showDashboard: false,
+                showScalebar: false,
+                //showTermsLink: false,
+                //supportedMapTypes: mapTypes.map(mt => Microsoft.Maps.MapTypeId[mt]),
+                zoom: 11,
+                //zoom: 19,
+            });
+            map.getCredentials(function(sessionKey) {
+                myLocationLayer = new Microsoft.Maps.Layer();
+                map.layers.insert(myLocationLayer);
+
+                $(gotoMyLocation).click(function() {
+                    clearInfoBox();
+                    map.setView({ center: myLocation, zoom: 19 });
+                    setUserPin(myLocation);
+                });
+
+                $.getJSON('/data/polling-places.json', function(pollingPlaces) {
+                    Microsoft.Maps.loadModule(['Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath', 'Microsoft.Maps.AutoSuggest'], function() {
+                        $('.bm_bottomLeftOverlay').html(`<div class="CopyrightContainer quadrantOverride multiLine" style="flex-direction: column; text-align: left;"><div class="CopyrightControl" ><span class="ShadowTextDark"><span class="CopyrightAttributionStyle">© 2023 TomTom, © 2023 Microsoft Corporation</span><a class="copyrightLink ShadowTextDark" style="pointer-events: auto; display: none;"></a></span></div><div id="TermsLinkContainer" class="TermsLinkContainer" style="text-align: left; float: left;"><a class="ShadowTextDark" href="https://www.microsoft.com/maps/assets/docs/terms.aspx" title="Terms" target="mc_bingMaps" style="pointer-events: auto">Terms</a></div></div>`);
+                        $('.bm_bottomRightOverlay').remove();
+                        $('.bm_bottomLeftOverlay').parent().get(0).style.zIndex = 0;
+
+                        const SpatialMath = Microsoft.Maps.SpatialMath;
+                        const pushpinLayer = new Microsoft.Maps.Layer();
+                        map.layers.insert(pushpinLayer);
+                        const searchLayer = new Microsoft.Maps.Layer();
+                        map.layers.insert(searchLayer);
+                        Microsoft.Maps.Events.addHandler(map, 'viewchangeend', searchBounds);
+
+                        function searchBounds() {
+
+
+                            map.entities.clear();
+                            pushpinLayer.clear();
+                            mapBounds = map.getBounds();
+                            let count = 0;
+                            let searchLocation = myLocation || radialSearchLocation;
+                            let orderedPollingPlaces = reorderLocations(searchLocation);
+
+
+                            orderedPollingPlaces.map(function(pollingPlace) {
+                                let pollingPlaceLocation = pollingPlace.location;
+                                if (mapBounds.contains(pollingPlaceLocation)) {
+                                    let pushPin = new Microsoft.Maps.Pushpin(pollingPlaceLocation, {
+                                        icon: "data:image/svg+xml,%3Csvg version='1.1' width='30' height='30' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 25 25' style='enable-background:new 0 0 25 25;' xml:space='preserve'%3E%3Ccircle fill='%23FFFFFF' cx='12.5' cy='12.5' r='12'/%3E%3Cpath fill='%23DA1415' d='M12.5,24.5c5.8,0,10.6-4.1,11.7-9.5H0.8C1.9,20.4,6.7,24.5,12.5,24.5z'/%3E%3Cpath fill='%235096C0' d='M12.5,0.5C6.7,0.5,1.9,4.6,0.8,10h23.5C23.1,4.6,18.3,0.5,12.5,0.5z'/%3E%3Cg%3E%3Cpolygon xmlns='http://www.w3.org/2000/svg' points='2.7,14.5 5.4,10.9 10.5,14.8 18.3,4.7 21.9,7.4 11.3,21.1' stroke='%23FFFFFF' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E",
+                                        anchor: new Microsoft.Maps.Point(15, 15),
+                                    });
+                                    pushpinLayer.add(pushPin);
+                                    pushPin.metadata = pollingPlace;
+
+                                    Microsoft.Maps.Events.addHandler(pushPin, 'click', function(e) {
+                                        $('#infobox').addClass('show');
+                                        let pollingPlaceTxt = pollingPlace.title;
+                                        cities.map(function(city) {
+                                            let r = new RegExp(`(${city})`);
+                                            pollingPlaceTxt = pollingPlaceTxt.replace(r, '\n<br>');
+                                        });
+                                        $('#resultTitle').html(pollingPlace.boldText);
+                                        $('#distanceFromSearch').html(pollingPlace.distanceTo.toFixed(2));
+                                        $('#directionsText').html(pollingPlaceTxt);
+                                        $('#infobox a').attr('href', pollingPlace.googleHref);
+
+                                        map.setView({ center: pollingPlaceLocation, zoom: 19 });
+
+                                    });
+                                }
+                            });
+                        }
+                        searchBounds();
+                        const autosuggestManager = new Microsoft.Maps.AutosuggestManager({ map: map, userLocation: myLocation });
+
+                        const searchPinscale = .07;
+
+                        const searchPinTxt = `<svg xmlns="http://www.w3.org/2000/svg" width="${384 * searchPinscale}" height="${512 * searchPinscale}" viewBox="0 0 384 512"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" fill="#5096C0" /></svg>`;
+
+
+                        autosuggestManager.attachAutosuggest('#searchBox', '#searchBoxContainer', function(autosuggestResult) {
+                            radialSearchLocation = autosuggestResult.location;
+
+                            clearInfoBox();
+                            searchLayer.clear();
+
+                            let pushPin = new Microsoft.Maps.Pushpin(radialSearchLocation, {
+                                //icon: `data:image/svg+xml,${searchPinTxt}`,
+                                icon: 'data:image/svg+xml,' + encodeURIComponent(searchPinTxt).replace(/%22/gi, `'`).replace(/%3d/gi, `=`).replace(/%2f/gi, `/`).replace(/%20/gi, ` `),
+                                anchor: new Microsoft.Maps.Point(384 * searchPinscale / 2, 512 * searchPinscale),
+                            });
+                            map.setView({ bounds: autosuggestResult.bestView });
+
+                            searchLayer.add(pushPin)
+
+                            //
+                            searchBounds();
+
+                        });
+
+                        $('#searchBox').attr('style', '');
+
+                        function reorderLocations(location) {
+                            return pollingPlaces.map((place) => {
+                                place.location = new n(place);
+                                place.searchedLocation = location;
+                                place.distanceTo = SpatialMath.Geometry.distance(location, place.location, SpatialMath.DistanceUnits.Miles);
+
+                                return place;
+                            }).sort((a, b) => a.distanceTo - b.distanceTo);
+                        }
+
+                    });
+
+                });
+
+            });
+        };
+
+        function clearInfoBox() {
+            [
+                "#resultTitle",
+                "#distanceFromSearch",
+                "#directionsText",
+            ].forEach((selector) => {
+                $(selector).empty();
+            });
+
+            $('#infobox a').attr('href', '#');
+
+            $(infobox).removeClass('show');
+        }
+
+        function setUserPin(l) {
+            if (myLocationLayer && allowMyLocationOnUpdate) {
+                myLocationLayer.clear();
+                let pin = new Microsoft.Maps.Pushpin(l, {
+                    //text: 'My Location',
+                    icon: 'img/user-location.svg',
+                    anchor: new Microsoft.Maps.Point(24, 24),
+                    //textOffset: new Microsoft.Maps.Point(0, -5),
+                });
+                myLocationLayer.add(pin);
+
+                //$('#activeDetails').html(`${l.latitude}, ${l.longitude}`);
+            }
+        }
+
+
+
+
+        let liArray = Array.from(document.querySelectorAll('#evSites li'));
+        let pollingPlaces = liArray.map(function(li) {
+
+            let googleHref = li.querySelector('a[title]').getAttribute('href');
+
+            let latLong = googleHref.split('/@')[1].split(',');
+            return {
+                siteID: li.querySelector('a[data-siteid]').getAttribute('data-siteid'),
+                boldText: li.querySelector('strong').innerText,
+                title: li.querySelector('a[title]').innerText,
+                googleHref: googleHref,
+                latitude: latLong[0], longitude: latLong[1]
+            }
+        });
+        pollingPlaces;
+
+    </script>
+
+</body>
+
+</html>

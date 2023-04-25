@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous" />
+    <title>Polling Places</title>
+
+    <style>
+        #searchResultsContainer_Desktop {
+            display: flex;
+            flex-grow: 1;
+            overflow-y: scroll;
+        }
+
+        #searchResults {
+            width: 100%;
+        }
+
+        #searchResultsContainer_Desktop #searchResults {
+            padding-right: .5rem;
+            padding-left: .5rem;
+        }
+
+        #searchResultsContainer_Mobile #searchResults {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+        #rightSection {
+            display: flex;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .closed-now {
+            color: #6c757d;
+        }
+
+        .open-now {
+            color: #198754;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .offcanvas-bottom {
+            right: 0;
+            left: 0;
+            height: 100vh;
+            max-height: 100%;
+            border-top: 1px solid rgba(0, 0, 0, .2);
+            transform: translateY(100%);
+        }
+
+        main {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column
+        }
+
+        #showOffcanvas {
+            display: block;
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        #showOffcanvas>a {
+            width: 100%;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .14);
+        }
+
+        /*@media (min-width: 576px) {selector {background-color: red;}}*/
+
+        #controlPanel_Mobile {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        #searchFilter {
+            display: flex;
+            box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .14);
+        }
+
+        #controlPanel_Mobile .MicrosoftMap #as_containerSearch_searchBox.as_container_search {
+            width: unset;
+        }
+
+        #controlPanel_Mobile>#searchFilter>.btn {
+            border-radius: .3rem;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+            border: 1px solid #ced4da;
+            border-right: none;
+            background-color: #ffffff;
+        }
+
+        #controlPanel_Mobile #searchBoxContainer {
+            border-radius: .3rem;
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            flex-grow: 1;
+            padding-right: 1.5rem;
+        }
+
+        #controlPanel_Mobile .form-check .form-check-input {
+            visibility: hidden;
+        }
+
+        #controlPanel_Mobile .form-check .form-check-label {
+            display: inline-block;
+            font-weight: 400;
+            line-height: 1.5;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            color: #6c757d;
+            background-color: #fff;
+            border: 1px solid #6c757d;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            border-radius: 50rem;
+            transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        #controlPanel_Mobile .form-check {
+            padding-left: 0px;
+        }
+
+        #controlPanel_Mobile .form-check .form-check-input:not(:checked)~.form-check-label {
+            color: #6c757d;
+            background-color: #fff;
+        }
+
+        #controlPanel_Mobile .form-check .form-check-input:checked~.form-check-label {
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        #controlPanel_Mobile .form-check .form-check-input:checked~.form-check-label::before {
+            display: inline-block;
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            content: "\f00c";
+        }
+
+        #controlPanel_Mobile #searchBox {
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-left: none
+        }
+
+        #NavBar_locateMe {
+            position: relative;
+        }
+
+        #controlPanel_Mobile #LocateMeButton.NavBar_Button {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #fff;
+            border: none;
+            box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .14);
+            position: absolute;
+            right: 0px;
+            margin-top: 1rem;
+        }
+
+        #controlPanel_Mobile #LocateMeButton .NavButton_Icon {
+            background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjUiIHN0cm9rZT0iIzc2NzY3NiIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz48cGF0aCBzdHJva2U9IiM3Njc2NzYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIGQ9Ik04IDF2Mm0wIDEwdjJtNy03aC0yTTMgOEgxIi8+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjIiIGZpbGw9IiM3Njc2NzYiLz48cGF0aCBkPSJNMCAwaDE2djE2SDB6IiBmaWxsPSJub25lIi8+PC9zdmc+);
+            height: 16px;
+            width: 16px;
+            margin: 8px;
+            border-radius: 4px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #leftSection {
+            display: none;
+        }
+
+        #mapContainer {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            main {
+                flex-direction: row;
+            }
+
+            #showOffcanvas {
+                display: none;
+            }
+
+            #leftSection {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
+        }
+
+        .offcanvas-footer {
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid #00000020;
+        }
+
+        .offcanvas-footer a,
+        #showOffcanvas a {
+            color: #0d6efd;
+        }
+
+        .offcanvas-body {
+            padding: 0px;
+            border-top: 1px solid #00000020;
+            border-bottom: 1px solid #00000020;
+        }
+
+        #searchResultsContainer_Desktop #searchResults .card {
+            margin-top: .5rem;
+            margin-bottom: .5rem;
+        }
+
+        .offcanvas-body #searchResultsContainer_Mobile #searchResults .card {
+            border: none;
+            border-bottom: 1px solid #00000020;
+            border-radius: 0px;
+        }
+
+        .offcanvas-body #searchResultsContainer_Mobile #searchResults .card .card-body {
+            padding: 1rem;
+        }
+
+        #spinner {
+            width: 3rem;
+            height: 3rem;
+            color: #50d6f8;
+        }
+
+        #loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            pointer-events: none;
+            z-index: 9999;
+            background-color: #00000080;
+            backdrop-filter: blur(2px);
+        }
+
+        #loader h5 {
+            position: absolute;
+            left: 0px;
+            top: 2rem;
+            padding: .5rem 2rem;
+            color: #fff;
+            background-color: #000000A8;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader" class="d-flex justify-content-center align-items-center">
+        <h5>Loading...</h5>
+        <div class="spinner-border" role="status" id="spinner">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <main>
+        <div style="width: 100vw; height: 100vh; display: flex; flex-grow: 1 1 0">
+            <div class="col-md-5 col-lg-4" id="leftSection">
+                <div id="controlPanel_Desktop">
+                </div>
+                <div id="searchResultsContainer_Desktop">
+                    <div id="searchResults" class="px-2"></div>
+                </div>
+            </div>
+            <div class="col-12 col-md-7 col-lg-8" id="rightSection">
+                <div id="mapContainer">
+                    <div id="map">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="controlPanel_Mobile">
+
+        </div>
+        <div id="showOffcanvas" class="py-3">
+            <a class="btn btn-lg" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
+                <i class="me-2 fa fa-list" aria-hidden="true"></i>Show list
+            </a>
+        </div>
+    </main>
+
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="searchResultsContainer_Mobile">
+
+            </div>
+        </div>
+        <div class="offcanvas-footer">
+            <a class="btn btn-lg" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
+                <i class="me-2 far fa-map" aria-hidden="true"></i>Show map
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const pageLoadNow = new Date();
+        window.addEventListener('resize', function(event) {
+            arrangeWindow();
+        }, true);
+        const srchResultsElem = '<div id="searchResults"></div>';
+
+        const controlPanel_Mobile = `
+					<div id="searchFilter">
+						<button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#showFilters" aria-expanded="false" aria-controls="showFilters">
+							<i class="fas fa-bars"></i>
+						</button>
+						<div id="searchBoxContainer">
+							<input type="text" id="searchBox" class="form-control" placeholder="Search" aria-label="Search" role="searchbox">
+						</div>
+					</div>
+					<div id="NavBar_locateMe">
+						<a id="LocateMeButton" class="NavBar_Button" href="javascript:void(0)" role="button" aria-pressed="true" aria-label="Locate me">
+							<div class="NavButton_Icon" title="Locate me"></div>
+						</a>
+					</div>
+					
+					<div class="collapse" id="showFilters">
+						<div class="card card-body">
+							<h6>Filter by</h6>
+							<div class="form-check">
+								<input class="form-check-input show-type" type="checkbox" value="electionDay" id="showElectionDayVoting">
+								<label class="form-check-label" for="showElectionDayVoting">
+									Election Day Voting
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input show-type" type="checkbox" value="earlyVoting" id="showEarlyVoting" checked>
+								<label class="form-check-label my-2" for="showEarlyVoting">
+									Early Voting
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="openNow">
+								<label class="form-check-label" for="openNow">
+									Open Now
+								</label>
+							</div>
+						</div>
+					</div>
+					
+					`;
+
+        const controlPanel_Desktop = `
+					<div id="searchBoxContainer">
+						<input type="text" id="searchBox" class="form-control" placeholder="search" aria-label="Search" role="searchbox" >
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="form-check">
+								<input class="form-check-input show-type" type="checkbox" value="electionDay" id="showElectionDayVoting">
+								<label class="form-check-label" for="showElectionDayVoting">
+									Election Day Voting
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input show-type" type="checkbox" value="earlyVoting" id="showEarlyVoting" checked>
+								<label class="form-check-label" for="showEarlyVoting">
+									Early Voting
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="openNow">
+								<label class="form-check-label" for="openNow">
+									Open Now
+								</label>
+							</div>
+						</div>
+					</div>`;
+
+        function arrangeWindow() {
+            if (window.innerWidth < 768) {
+                document.querySelector('#searchResultsContainer_Mobile').innerHTML = srchResultsElem;
+                document.querySelector('#searchResultsContainer_Desktop').innerHTML = '';
+
+                document.querySelector('#controlPanel_Mobile').innerHTML = controlPanel_Mobile;
+                document.querySelector('#controlPanel_Desktop').innerHTML = '';
+            } else {
+                document.querySelector('#searchResultsContainer_Desktop').innerHTML = srchResultsElem;
+                document.querySelector('#searchResultsContainer_Mobile').innerHTML = '';
+
+                document.querySelector('#controlPanel_Desktop').innerHTML = controlPanel_Desktop;
+                document.querySelector('#controlPanel_Mobile').innerHTML = '';
+            }
+            if (new Date(pageLoadNow.toISOString().split('T')[0]).toISOString() == new Date('2022/11/8').toISOString()) {
+                document.querySelector('#showElectionDayVoting').setAttribute('checked', 'checked');
+            }
+        }
+
+        arrangeWindow();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol'></script>
+    <script>
+        $(function() {
+
+            const BingMapsMasterKey = 'AkLdK49z62QhePT3_wOwTgwrvyKxdfEGDg939adTVKEF341pHDylvxD-23pUS7kt';
+            let user_location;
+            let search_location;
+
+            navigator.geolocation.watchPosition(function(pos) {
+                let crd = pos.coords;
+
+                user_location = {
+                    "latitude": crd.latitude,
+                    "longitude": crd.longitude,
+                    "altitude": 0,
+                    "altitudeReference": -1
+                };
+            }, function(e) {
+                console.warn(`ERROR(${e.code}): ${e.message}`);
+            }, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 1000
+            });
+
+            $(window).on('load', function() {
+                const map = new Microsoft.Maps.Map('#map', {
+                    credentials: BingMapsMasterKey,
+                    navigationBarMode: Microsoft.Maps.NavigationBarMode.square,
+                    liteMode: true,
+                    showScalebar: false,
+                    enableClickableLogo: false,
+                    minZoom: 4
+                });
+
+                const mapOptions_Desktop = {
+                    showDashboard: true,
+                    isMobileMap: false
+                }
+
+                const mapOptions_Mobile = {
+                    showDashboard: false,
+                    isMobileMap: true
+                }
+
+                function responsiveMapOptions() {
+                    if ($(window).width() < 768) {
+                        if (!map.getOptions().isMobileMap) {
+                            map.setOptions(mapOptions_Mobile);
+                            $('#LocateMeButton').click(function() {
+                                map.setView({
+                                    center: user_location,
+                                    //zoom:13
+                                });
+                            });
+                        }
+                    } else {
+                        if (map.getOptions().isMobileMap) {
+                            map.setOptions(mapOptions_Desktop);
+                        }
+                    }
+                }
+
+                responsiveMapOptions();
+
+                $(window).on('resize', function() {
+                    responsiveMapOptions()
+                });
+
+                if (!user_location) {
+                    user_location = map.getCenter();
+                }
+                let infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                    visible: false
+                });
+                infobox.setMap(map);
+
+                map.getCredentials(function(sessionKey) {
+                    Microsoft.Maps.loadModule(['Microsoft.Maps.AutoSuggest', 'Microsoft.Maps.SpatialMath'], function() {
+                        const SpatialMath = Microsoft.Maps.SpatialMath;
+                        const pushpinLayer = new Microsoft.Maps.Layer();
+                        const googleQueryURL = 'https://maps.google.com/?q=';
+                        map.layers.insert(pushpinLayer);
+                        //, 'Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath', 'Microsoft.Maps.Search'
+                        autosuggestManager = new Microsoft.Maps.AutosuggestManager(map);
+
+                        autosuggestManager.attachAutosuggest('#searchBox', '#searchBoxContainer', function(autosuggestResult) {
+                            search_location = autosuggestResult.location
+                            map.setView({
+                                center: autosuggestResult.location,
+                                zoom: 10
+                            });
+                        });
+
+                        //searchManager = new Microsoft.Maps.Search.SearchManager(map);
+                        $.get('places.json', function(places) {
+                            $('#loader').remove();
+                            map.setView({
+                                center: user_location,
+                                //zoom:13
+                            });
+
+                            Microsoft.Maps.Events.addHandler(map, 'viewchangeend', searchBounds);
+
+                            searchBounds();
+
+                            $('input[type="checkbox"]').change(function() {
+                                searchBounds();
+                            });
+
+
+                            function searchBounds() {
+                                let rightNow = new Date()
+
+                                let checkedPollingDays = $('.show-type:checked').map(function() {
+                                    return $(this).val()
+                                }).get();
+
+                                places.map(function(x) {
+                                    delete x.distanceToUser;
+                                    delete x.openNow;
+                                    delete x.openToday;
+                                });
+
+                                $('#searchResults').html('');
+                                map.entities.clear();
+                                pushpinLayer.clear();
+                                mapBounds = map.getBounds();
+                                let count = 0;
+
+                                places.filter(function(p) {
+                                    let showOpenNow = $('#openNow:checked').length == 1;
+                                    let isOpenNow;
+                                    p.hoursofOperation.filter(function(x) {
+                                        isOpenNow = isOpen(x).openNow;
+                                    });
+
+                                    if (showOpenNow) {
+                                        if (isOpenNow) {
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    } else {
+                                        return true;
+                                    }
+                                }).map(function(place, i) {
+
+                                    let pollingTypeChecked = place.pollingDays.filter((p) => checkedPollingDays.includes(p)).length > 0;
+                                    if (pollingTypeChecked) {
+
+                                        let placeCoords = place.geolocatedData.point.coordinates;
+                                        let placeLoc = new Microsoft.Maps.Location(placeCoords[0], placeCoords[1]);
+
+                                        if (mapBounds.contains(placeLoc)) {
+                                            let pushPin = new Microsoft.Maps.Pushpin(placeLoc, {
+                                                icon: "data:image/svg+xml,%3Csvg version='1.1' width='30' height='30' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 25 25' style='enable-background:new 0 0 25 25;' xml:space='preserve'%3E%3Ccircle fill='%23FFFFFF' cx='12.5' cy='12.5' r='12'/%3E%3Cpath fill='%23DA1415' d='M12.5,24.5c5.8,0,10.6-4.1,11.7-9.5H0.8C1.9,20.4,6.7,24.5,12.5,24.5z'/%3E%3Cpath fill='%235096C0' d='M12.5,0.5C6.7,0.5,1.9,4.6,0.8,10h23.5C23.1,4.6,18.3,0.5,12.5,0.5z'/%3E%3Cg%3E%3Cpolygon xmlns='http://www.w3.org/2000/svg' points='2.7,14.5 5.4,10.9 10.5,14.8 18.3,4.7 21.9,7.4 11.3,21.1' stroke='%23FFFFFF' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E",
+                                                anchor: new Microsoft.Maps.Point(15, 15),
+                                            });
+                                            pushpinLayer.add(pushPin)
+                                            pushPin.metadata = place;
+
+                                            Microsoft.Maps.Events.addHandler(map, 'click', function() {
+                                                infobox.setOptions({
+                                                    visible: false
+                                                });
+                                            });
+
+                                            Microsoft.Maps.Events.addHandler(pushPin, 'click', function(e) {
+                                                let openElem = '';
+                                                if (isOpen(pushPin.metadata).openNow) {
+                                                    openElem = '<div class="open-now">Open Now</div>';
+                                                }
+
+                                                infobox.setOptions({
+                                                    location: e.target.getLocation(),
+                                                    htmlContent: `
+														<div class="card">
+															<div class="card-body">
+																<h5 class="card-title">${pushPin.metadata.Name}</h5>
+																${openElem}
+																<a href="${googleQueryURL}${place.Name.replace(/ /g, '+')},+${place.geolocatedData.address.formattedAddress.replace(/ /g, '+')}" class="directions-link mb-3">${place.geolocatedData.address.formattedAddress}</a>
+															</div>
+														</div>`,
+                                                    visible: true
+                                                });
+                                            });
+
+                                            let calcLocation = user_location;
+                                            if (search_location) {
+                                                calcLocation = search_location;
+                                            }
+                                            let distanceToUser = SpatialMath.getDistanceTo(calcLocation, placeLoc, SpatialMath.DistanceUnits.Miles).toFixed(2);
+                                            place.distanceToUser = distanceToUser;
+                                        }
+                                    }
+                                    count++;
+                                });
+
+                                let placesSorted = places.filter(z => z.distanceToUser).sort((a, b) => parseFloat(a.distanceToUser) - parseFloat(b.distanceToUser))
+                                placesSorted.map(function(place, i) {
+                                    let openNowClass = 'closed-now';
+                                    let openNowText = '';
+                                    let hoursToday = 'Closed today';
+                                    let txtMuted = 'text-muted'
+
+                                    let hrs = place.hoursofOperation.sort((a, b) => Date.parse(a.open) - Date.parse(b.open)).map(function(x) {
+                                        let bold = '';
+                                        let openDate = new Date(x.open);
+                                        let closeDate = new Date(x.close);
+                                        let openStatus = isOpen(x);
+
+                                        if (openStatus.openToday) {
+                                            hoursToday = `${formatTime(openDate)} - ${formatTime(closeDate)}`;
+                                            openNowText = 'Closed '
+                                            bold = 'bold'
+                                            txtMuted = '';
+                                            if (openStatus.openNow) {
+                                                openNowClass = 'me-3 open-now';
+                                                openNowText = 'Open Now';
+                                            }
+                                        }
+
+                                        return `<tr><td class="${bold} ${txtMuted}">${openDate.toLocaleDateString()}</td><td class="${bold} ${txtMuted}">${formatTime(openDate)} - ${formatTime(closeDate)}</td></tr>`;
+                                    }).join('')
+
+
+
+                                    let accordionID = place.Name.replace(/\W/g, '') + '_' + i;
+                                    //const GoogleSearchURL = `https://www.google.com/maps/search/?api=1&query=${googleSearchAddr}`;
+                                    //let googleURL = `https://maps.google.com/?q=${branch.MarketingName}, ${branch.AddressLine},${branch.Locality},${branch.AdminDistrict},${branch.PostalCode}`.replace(/\s/g, '+').replace(/\+undefined/gi, '');
+                                    //googleQueryURL
+                                    let card = $(`<div class="card">
+										<div class="card-body">
+											<h5 class="card-title">${place.Name}</h5>	
+											
+											<a href="${googleQueryURL}${place.Name.replace(/ /g, '+')},+${place.geolocatedData.address.formattedAddress.replace(/ /g, '+')}" class="directions-link mb-3">${place.geolocatedData.address.formattedAddress}</a>
+																					
+											<div class="mb-3">
+												<div><span class="${openNowClass}">${openNowText}</span>${hoursToday}</div>											
+											</div>
+											<div class="accordion" id="accordionHours${accordionID}">
+												<div class="accordion-item">
+													<h2 class="accordion-header" id="heading${accordionID}">
+														<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${accordionID}" aria-expanded="false" aria-controls="collapse${accordionID}">
+															Show all hours
+														</button>
+													</h2>
+													<div id="collapse${accordionID}" class="accordion-collapse collapse" aria-labelledby="heading${accordionID}" data-bs-parent="#accordionHours${accordionID}">
+														<div class="accordion-body">
+															<table class="table"><tbody>${hrs}</tbody></table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>`);
+
+                                    $('#searchResults').append(card);
+                                });
+
+                                if ($('#searchResults .card').length == 0) {
+                                    $('#searchResults').html('<h5 class="p-3">No results found</h5>');
+                                }
+                            }
+                        });
+
+                    });
+                });
+
+            });
+
+
+        });
+
+        function formatTime(t) {
+            return t.toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        }
+
+        function isOpen(location) {
+            let now = new Date()
+            let openDate = new Date(location.open);
+            let closeDate = new Date(location.close);
+            let isOpenToday = false;
+            let isOpenNow = false;
+            if (openDate.toDateString() == now.toDateString()) {
+                isOpenToday = true;
+                if (Date.parse(now) >= Date.parse(openDate) && Date.parse(now) <= Date.parse(closeDate)) {
+                    isOpenNow = true;
+                }
+            }
+
+            return {
+                "openToday": isOpenToday,
+                "openNow": isOpenNow
+            };
+        }
+    </script>
+
+</body>
+
+</html>

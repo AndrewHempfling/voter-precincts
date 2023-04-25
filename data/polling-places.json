@@ -1,0 +1,338 @@
+[
+	{
+		"siteID": "8",
+		"boldText": "Bexar County Elections ",
+		"title": "1103 S. Frio San Antonio TX 78207",
+		"googleHref": "https://www.google.com/maps/place/Bexar+County+Elections+Department/@29.4060154,-98.5080269,14z/data=!4m5!3m4!1s0x0:0x5b95eb94b7c37334!8m2!3d29.4148904!4d-98.5061055",
+		"latitude": "29.4060154",
+		"longitude": "-98.5080269"
+	},
+	{
+		"siteID": "46",
+		"boldText": "Alamo Heights ISD Admin ",
+		"title": "7101 Broadway St. San Antonio TX 78209",
+		"googleHref": "https://www.google.com/maps/place/Alamo+Heights+Independent+School+District/@29.4923811,-98.4690737,17z/data=!3m1!4b1!4m5!3m4!1s0x865cf56bc710b07d:0x1fd760a21a87a123!8m2!3d29.4923764!4d-98.466885",
+		"latitude": "29.4923811",
+		"longitude": "-98.4690737"
+	},
+	{
+		"siteID": "10",
+		"boldText": "Brookhollow Library ",
+		"title": "530 Heimer Rd. San Antonio TX 78232",
+		"googleHref": "https://www.google.com/maps/place/Brook+Hollow+Library/@29.5694549,-98.4750827,18z/data=!4m13!1m7!3m6!1s0x865c8a7cb720963f:0x643948b61bcbea31!2s530+Heimer+Rd,+San+Antonio,+TX+78232!3b1!8m2!3d29.569168!4d-98.4737899!3m4!1s0x0:0xb89268160601fc06!8m2!3d29.5695589!4d-98.473215",
+		"latitude": "29.5694549",
+		"longitude": "-98.4750827"
+	},
+	{
+		"siteID": "34",
+		"boldText": "Castle Hills City Hall ",
+		"title": "209 Lemonwood Dr. Castle Hills TX 78213",
+		"googleHref": "https://www.google.com/maps/place/Castle+Hills+Police+Department/@29.5218082,-98.5223234,18.25z/data=!4m5!3m4!1s0x0:0x66d5e13f67092c1a!8m2!3d29.5219846!4d-98.5214692",
+		"latitude": "29.5218082",
+		"longitude": "-98.5223234"
+	},
+	{
+		"siteID": "3",
+		"boldText": "Claude Black Center ",
+		"title": "2805 E. Commerce San Antonio TX 78202",
+		"googleHref": "https://www.google.com/maps/place/2805+East+Commerce+-+Claude+Black+Center/@29.4198168,-98.4477157,18.5z/data=!4m5!3m4!1s0x0:0xea7324b1770a0c7c!8m2!3d29.4204417!4d-98.4455305",
+		"latitude": "29.4198168",
+		"longitude": "-98.4477157"
+	},
+	{
+		"siteID": "7",
+		"boldText": "Cody Library ",
+		"title": "11441 Vance Jackson San Antonio TX 78230",
+		"googleHref": "https://www.google.com/maps/place/Cody+Library/@29.5468315,-98.5657265,19z/data=!4m5!3m4!1s0x0:0x55e032dcc4d03344!8m2!3d29.547207!4d-98.5653797",
+		"latitude": "29.5468315",
+		"longitude": "-98.5657265"
+	},
+	{
+		"siteID": "23",
+		"boldText": "Copernicus Community Ctr. ",
+		"title": "5003 Lord Rd. San Antonio TX 78220",
+		"googleHref": "https://www.google.com/maps/place/Copernicus+Community+Center/@29.4141777,-98.3950127,17z/data=!4m5!3m4!1s0x0:0x14f7ed810bd811ee!8m2!3d29.414332!4d-98.3937907",
+		"latitude": "29.4141777",
+		"longitude": "-98.3950127"
+	},
+	{
+		"siteID": "462",
+		"boldText": "Cortez Library ",
+		"title": "2803 Hunter Blvd San Antonio TX 78224",
+		"googleHref": "https://www.google.com/maps/place/Cortez+Library/@29.3348957,-98.5540687,17z/data=!3m1!4b1!4m5!3m4!1s0x865c59e0cbcac56f:0xb3754f3f95e05293!8m2!3d29.334891!4d-98.55188",
+		"latitude": "29.3348957",
+		"longitude": "-98.5540687"
+	},
+	{
+		"siteID": "22",
+		"boldText": "East Central ISD Admin ",
+		"title": "6634 New Sulphur Springs Rd. San Antonio TX 78263",
+		"googleHref": "https://www.google.com/maps/place/East+Central+Independent+School+District/@29.362586,-98.3611247,18z/data=!4m5!3m4!1s0x0:0xc81092db3d88a512!8m2!3d29.3627378!4d-98.3599661",
+		"latitude": "29.362586",
+		"longitude": "-98.3611247"
+	},
+	{
+		"siteID": "31",
+		"boldText": "Encino Library ",
+		"title": "2515 E. Evans Rd. San Antonio TX 78259",
+		"googleHref": "https://www.google.com/maps/place/Encino+Library/@29.6360903,-98.4498846,18z/data=!4m5!3m4!1s0x0:0x91ba3622a5366e25!8m2!3d29.6368025!4d-98.4492977",
+		"latitude": "29.6360903",
+		"longitude": "-98.4498846"
+	},
+	{
+		"siteID": "16",
+		"boldText": "Great Northwest Library ",
+		"title": "9050 Wellwood San Antonio TX 78250",
+		"googleHref": "https://www.google.com/maps/place/Great+Northwest+Library/@29.4834193,-98.6639254,18.25z/data=!4m5!3m4!1s0x0:0xe143e0ee165a4c97!8m2!3d29.4833629!4d-98.662831",
+		"latitude": "29.4834193",
+		"longitude": "-98.6639254"
+	},
+	{
+		"siteID": "12",
+		"boldText": "Guerra Library ",
+		"title": "7978 W. Military Dr. San Antonio TX 78227",
+		"googleHref": "https://www.google.com/maps/place/Henry+Guerra+Library/@29.424551,-98.6264326,18z/data=!4m5!3m4!1s0x0:0x1b15267cdb6f2d7b!8m2!3d29.4245768!4d-98.625494",
+		"latitude": "29.424551",
+		"longitude": "-98.6264326"
+	},
+	{
+		"siteID": "47",
+		"boldText": "Helotes City Hall ",
+		"title": "12951 Bandera Rd Helotes TX 78023",
+		"googleHref": "https://www.google.com/maps/place/Helotes+Municipal+Court/@29.5633029,-98.6892408,17z/data=!4m5!3m4!1s0x865c68edf98628e1:0xc97bd0cd672dbc6a!8m2!3d29.5628039!4d-98.6862702",
+		"latitude": "29.5633029",
+		"longitude": "-98.6892408"
+	},
+	{
+		"siteID": "33",
+		"boldText": "John Igo Library ",
+		"title": "13330 Kyle Seale Pkwy. San Antonio TX 78249",
+		"googleHref": "https://www.google.com/maps/place/Igo+Library/@29.5687416,-98.6453027,17z/data=!4m13!1m7!3m6!1s0x865c663964cb391b:0x4edf95c57d40a854!2s13330+Kyle+Seale+Pkwy,+San+Antonio,+TX+78249!3b1!8m2!3d29.568737!4d-98.643114!3m4!1s0x0:0x1726790f3e29f0d4!8m2!3d29.5696196!4d-98.6432033",
+		"latitude": "29.5687416",
+		"longitude": "-98.6453027"
+	},
+	{
+		"siteID": "9",
+		"boldText": "Johnston Library ",
+		"title": "6307 Sun Valley Dr. San Antonio TX 78227",
+		"googleHref": "https://www.google.com/maps/place/Johnston+Library/@29.3711147,-98.640821,18.25z/data=!4m13!1m7!3m6!1s0x865c5b2043c5b97f:0xcdee3b8a64fdd07c!2s6307+Sun+Valley+Dr,+San+Antonio,+TX+78227!3b1!8m2!3d29.371283!4d-98.639836!3m4!1s0x0:0x57ed08e568c8dda!8m2!3d29.371947!4d-98.6394589",
+		"latitude": "29.3711147",
+		"longitude": "-98.640821"
+	},
+	{
+		"siteID": "44",
+		"boldText": "Kirby City Hall ",
+		"title": "112 Bauman San Antonio TX 78219",
+		"googleHref": "https://www.google.com/maps/place/Kirby+City+Mayor+Office/@29.4715183,-98.382257,19.79z/data=!4m5!3m4!1s0x0:0x512941d3463ee18f!8m2!3d29.4717334!4d-98.3817979",
+		"latitude": "29.4715183",
+		"longitude": "-98.382257"
+	},
+	{
+		"siteID": "2887",
+		"boldText": "Ladera Elementary School ",
+		"title": "14750 W Grosenbacher Rd San Antonio TX 78245",
+		"googleHref": "https://www.google.com/maps/search/750+West+Grosenbacher+Road,+San+Antonio,+TX/@29.4099058,-98.7508203,16.25z",
+		"latitude": "29.4099058",
+		"longitude": "-98.7508203"
+	},
+	{
+		"siteID": "5",
+		"boldText": "Las Palmas Library ",
+		"title": "515 Castroville Rd. San Antonio TX 78237",
+		"googleHref": "https://www.google.com/maps/place/Las+Palmas+Library/@29.4181397,-98.5517767,17z/data=!4m5!3m4!1s0x0:0x8c54e668774ab88d!8m2!3d29.4182064!4d-98.5496492",
+		"latitude": "29.4181397",
+		"longitude": "-98.5517767"
+	},
+	{
+		"siteID": "27",
+		"boldText": "Leon Valley Conference Ctr. ",
+		"title": "6421 Evers Rd. San Antonio TX 78240",
+		"googleHref": "https://www.google.com/maps/place/Leon+Valley+Community+and+Conference+Center/@29.5007087,-98.6135555,19z/data=!4m15!1m9!4m8!1m0!1m6!1m2!1s0x865c5d83003c8517:0xee0ae6b109e7e1b3!2sLeon+Valley+Community+and+Conference+Center,+6427+Evers+Rd,+Leon+Valley,+TX+78238!2m2!1d-98.6125005!2d29.5014856!3m4!1s0x0:0xee0ae6b109e7e1b3!8m2!3d29.5014856!4d-98.6125007",
+		"latitude": "29.5007087",
+		"longitude": "-98.6135555"
+	},
+	{
+		"siteID": "11",
+		"boldText": "Lions Field ",
+		"title": "2809 Broadway St. San Antonio TX 78209",
+		"googleHref": "https://www.google.com/maps/place/Lions+Field/@29.4535753,-98.4737686,18.5z/data=!4m5!3m4!1s0x0:0xbaad992167ec530b!8m2!3d29.4537344!4d-98.4730446",
+		"latitude": "29.4535753",
+		"longitude": "-98.4737686"
+	},
+	{
+		"siteID": "2888",
+		"boldText": "Luckey Ranch Elementary School ",
+		"title": "12045 Lucky River San Antonio TX 78252",
+		"googleHref": "https://www.google.com/maps/place/Medina+Valley+Independent+School+District+Luckey+Ranch+Elementary+School/@29.3606191,-98.7343715,16.25z/data=!4m6!3m5!1s0x865c45cca985abbb:0x9938781b1acd3623!8m2!3d29.363404!4d-98.732257!16s%2Fg%2F11ggrxtkzq",
+		"latitude": "29.3606191",
+		"longitude": "-98.7343715"
+	},
+	{
+		"siteID": "13",
+		"boldText": "Maverick Library ",
+		"title": "8700 Mystic Park San Antonio TX 78254",
+		"googleHref": "https://www.google.com/maps/place/Maverick+Library/@29.5246579,-98.6444762,17z/data=!4m5!3m4!1s0x0:0x4f928bb4736cc1f1!8m2!3d29.5246931!4d-98.6418629",
+		"latitude": "29.5246579",
+		"longitude": "-98.6444762"
+	},
+	{
+		"siteID": "15",
+		"boldText": "McCreless Library ",
+		"title": "1023 Ada St. San Antonio TX 78223",
+		"googleHref": "https://www.google.com/maps/place/McCreless+Library/@29.381459,-98.4590337,18z/data=!4m5!3m4!1s0x0:0xec40af36301c652a!8m2!3d29.3815376!4d-98.4579036",
+		"latitude": "29.381459",
+		"longitude": "-98.4590337"
+	},
+	{
+		"siteID": "28",
+		"boldText": "Memorial Library ",
+		"title": "3222 Culebra Rd. San Antonio TX 78228",
+		"googleHref": "https://www.google.com/maps/place/Memorial+Library/@29.4484035,-98.5652882,18z/data=!4m13!1m7!3m6!1s0x865c5e997799dfdd:0x5a8cc6f3d38a63c5!2s3222+Culebra+Rd,+San+Antonio,+TX+78228!3b1!8m2!3d29.448602!4d-98.56399!3m4!1s0x0:0x4efc67e255b11baf!8m2!3d29.448272!4d-98.56429",
+		"latitude": "29.4484035",
+		"longitude": "-98.5652882"
+	},
+	{
+		"siteID": "19",
+		"boldText": "Mission Library ",
+		"title": "3134 Roosevelt Ave. San Antonio TX 78214",
+		"googleHref": "https://www.google.com/maps/place/Mission+Library/@29.3652607,-98.4824961,17z/data=!4m5!3m4!1s0x0:0x526bfb44e7432ed4!8m2!3d29.3651233!4d-98.4800767",
+		"latitude": "29.3652607",
+		"longitude": "-98.4824961"
+	},
+	{
+		"siteID": "18",
+		"boldText": "Northside Activity Ctr. ",
+		"title": "7001 Culebra Rd. San Antonio TX 78238",
+		"googleHref": "https://www.google.com/maps/place/Northside+Activity+Center/@29.4521118,-98.6275109,17.75z/data=!4m5!3m4!1s0x0:0xef042f046caee408!8m2!3d29.4518835!4d-98.6273682",
+		"latitude": "29.4521118",
+		"longitude": "-98.6275109"
+	},
+	{
+		"siteID": "36",
+		"boldText": "Northwest Vista College ",
+		"title": "3535 N. Ellison Dr. San Antonio TX 78251",
+		"googleHref": "https://www.google.com/maps/place/Northwest+Vista+College/@29.4721659,-98.7081323,17.75z/data=!4m5!3m4!1s0x0:0xf1b8ec2aa1076834!8m2!3d29.4714567!4d-98.7052073",
+		"latitude": "29.4721659",
+		"longitude": "-98.7081323"
+	},
+	{
+		"siteID": "32",
+		"boldText": "Old Converse City Hall ",
+		"title": "407 S. Seguin Rd. Converse TX 78109",
+		"googleHref": "https://www.google.com/maps/place/Converse+City+Hall/@29.5148256,-98.3135174,18.25z/data=!4m5!3m4!1s0x0:0x5c40d045cc47a5c!8m2!3d29.5148079!4d-98.3121624",
+		"latitude": "29.5148256",
+		"longitude": "-98.3135174"
+	},
+	{
+		"siteID": "37",
+		"boldText": "Palo Alto College ",
+		"title": "1400 W. Villaret Blvd. San Antonio TX 78224",
+		"googleHref": "https://www.google.com/maps/place/Palo+Alto+College+-+Brazos+Hall/@29.3235766,-98.5453501,18.75z/data=!4m5!3m4!1s0x0:0xcf442dd863894045!8m2!3d29.3240367!4d-98.5450827",
+		"latitude": "29.3235766",
+		"longitude": "-98.5453501"
+	},
+	{
+		"siteID": "25",
+		"boldText": "Parman Library ",
+		"title": "20735 Wilderness Oak San Antonio TX 78258",
+		"googleHref": "https://www.google.com/maps/place/Parman+Library+at+Stone+Oak/@29.6344388,-98.5167641,17z/data=!3m1!5s0x865c6246791b4b1f:0x94699ead12986800!4m5!3m4!1s0x0:0xa4cfa702f260ab!8m2!3d29.6365723!4d-98.5150554",
+		"latitude": "29.6344388",
+		"longitude": "-98.5167641"
+	},
+	{
+		"siteID": "30",
+		"boldText": "Precinct 1 Office ",
+		"title": "3505 S. Pleasanton Rd. San Antonio TX 78221",
+		"googleHref": "https://www.google.com/maps/place/BiblioTech+South/@29.3441747,-98.5049599,19.25z/data=!4m5!3m4!1s0x0:0x8b8160de75753585!8m2!3d29.3439596!4d-98.5049462",
+		"latitude": "29.3441747",
+		"longitude": "-98.5049599"
+	},
+	{
+		"siteID": "59",
+		"boldText": "Precinct 3 Office ",
+		"title": "320 Interpark Blvd San Antonio TX 78216",
+		"googleHref": "https://www.google.com/maps/place/Bexar+County+Justice+of+Peace,+Precinct+3/@29.558,-98.4901224,17z/data=!3m1!4b1!4m5!3m4!1s0x865c8acc55555555:0xab98f7017c5ddc04!8m2!3d29.5579954!4d-98.4879337",
+		"latitude": "29.558",
+		"longitude": "-98.4901224"
+	},
+	{
+		"siteID": "38",
+		"boldText": "SAC Victory Center ",
+		"title": "1819 N. Main Ave. San Antonio TX 78212",
+		"googleHref": "https://www.google.com/maps/place/EcoCentro/@29.4462234,-98.49454,19.25z/data=!4m5!3m4!1s0x0:0x56dec7e56389b841!8m2!3d29.4462376!4d-98.4939203",
+		"latitude": "29.4462234",
+		"longitude": "-98.49454"
+	},
+	{
+		"siteID": "48",
+		"boldText": "Schaefer Library ",
+		"title": "6322 Us Hwy 87 E San Antonio TX 78222",
+		"googleHref": "https://www.google.com/maps/place/Schaefer+Library/@29.3937351,-98.3689652,950m/data=!3m2!1e3!4b1!4m5!3m4!1s0x865cf11b700ddb47:0xb7d4c504c9cc30d5!8m2!3d29.3937351!4d-98.3667765",
+		"latitude": "29.3937351",
+		"longitude": "-98.3689652"
+	},
+	{
+		"siteID": "14",
+		"boldText": "Semmes Library ",
+		"title": "15060 Judson Rd. San Antonio TX 78247",
+		"googleHref": "https://www.google.com/maps/place/Julia+Yates+Semmes+Library/@29.5791487,-98.373963,17.75z/data=!4m5!3m4!1s0x0:0x8d627946b8c77d38!8m2!3d29.5793098!4d-98.3725798",
+		"latitude": "29.5791487",
+		"longitude": "-98.373963"
+	},
+	{
+		"siteID": "6",
+		"boldText": "Shavano Park City Hall ",
+		"title": "900 Saddletree Ct. Shavano Park TX 78231",
+		"googleHref": "https://www.google.com/maps/place/Shavano+Park+City+Hall/@29.5849902,-98.5561364,17.5z/data=!4m5!3m4!1s0x0:0x8e97a2a2cca7645b!8m2!3d29.5849868!4d-98.5545865",
+		"latitude": "29.5849902",
+		"longitude": "-98.5561364"
+	},
+	{
+		"siteID": "40",
+		"boldText": "Southside ISD Admin ",
+		"title": "1460 Martinez-Losoya Rd. San Antonio TX 78221",
+		"googleHref": "https://www.google.com/maps/place/Southside+ISD+Administration+Building/@29.2368236,-98.4753942,17z/data=!4m5!3m4!1s0x0:0xacf52f2f62c8110c!8m2!3d29.2405671!4d-98.4727462",
+		"latitude": "29.2368236",
+		"longitude": "-98.4753942"
+	},
+	{
+		"siteID": "4",
+		"boldText": "Tobin Library ",
+		"title": "4134 Harry Wurzbach San Antonio TX 78209",
+		"googleHref": "https://www.google.com/maps/place/Tobin+Library+at+Oakwell/@29.5106527,-98.4360827,17z/data=!4m5!3m4!1s0x0:0xe2cd91b876ccdc4d!8m2!3d29.5106123!4d-98.4337979",
+		"latitude": "29.5106527",
+		"longitude": "-98.4360827"
+	},
+	{
+		"siteID": "42",
+		"boldText": "UTSA ",
+		"title": "1 UTSA Circle San Antonio TX 78249",
+		"googleHref": "https://www.google.com/maps/place/The+University+of+Texas+at+San+Antonio/@29.5846007,-98.6172531,19.5z/data=!4m5!3m4!1s0x0:0xb4ab80d8dc90bc9c!8m2!3d29.5845582!4d-98.6165864",
+		"latitude": "29.5846007",
+		"longitude": "-98.6172531"
+	},
+	{
+		"siteID": "50",
+		"boldText": "Universal City Library ",
+		"title": "100 Northview Dr Universal City TX 78148",
+		"googleHref": "https://www.google.com/maps/place/Universal+City+Library/@29.5496925,-98.2990977,17z/data=!3m1!4b1!4m5!3m4!1s0x865c92bd25db93f1:0xde39030aa624976b!8m2!3d29.5496879!4d-98.296909",
+		"latitude": "29.5496925",
+		"longitude": "-98.2990977"
+	},
+	{
+		"siteID": "26",
+		"boldText": "Windcrest Takas Park ",
+		"title": "9310 Jim Seal Dr. Windcrest TX 78239",
+		"googleHref": "https://www.google.com/maps/place/Takas+Park/@29.5245284,-98.380455,18z/data=!4m5!3m4!1s0x0:0x3bd97c256914d5f9!8m2!3d29.5246575!4d-98.3794121",
+		"latitude": "29.5245284",
+		"longitude": "-98.380455"
+	},
+	{
+		"siteID": "24",
+		"boldText": "Wonderland of The Americas ",
+		"title": "4522 Fredericksburg Rd. San Antonio TX 78201",
+		"googleHref": "https://www.google.com/maps/place/Wonderland+of+The+Americas/@29.493282,-98.5533404,17z/data=!4m13!1m7!3m6!1s0x865c5e3fd79528bd:0xd7b321b58ddc4e83!2s4522+Fredericksburg+Rd,+San+Antonio,+TX+78201!3b1!8m2!3d29.4932773!4d-98.5511517!3m4!1s0x0:0xfa7f8f27fbd4c213!8m2!3d29.4929114!4d-98.551107",
+		"latitude": "29.493282",
+		"longitude": "-98.5533404"
+	}
+]
