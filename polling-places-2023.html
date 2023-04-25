@@ -310,7 +310,7 @@
                     setUserPin(myLocation);
                 });
 
-                $.getJSON('/data/polling-places.json', function(pollingPlaces) {
+                $.getJSON('data/polling-places.json', function(pollingPlaces) {
                     Microsoft.Maps.loadModule(['Microsoft.Maps.SpatialDataService', 'Microsoft.Maps.SpatialMath', 'Microsoft.Maps.AutoSuggest'], function() {
                         $('.bm_bottomLeftOverlay').html(`<div class="CopyrightContainer quadrantOverride multiLine" style="flex-direction: column; text-align: left;"><div class="CopyrightControl" ><span class="ShadowTextDark"><span class="CopyrightAttributionStyle">© 2023 TomTom, © 2023 Microsoft Corporation</span><a class="copyrightLink ShadowTextDark" style="pointer-events: auto; display: none;"></a></span></div><div id="TermsLinkContainer" class="TermsLinkContainer" style="text-align: left; float: left;"><a class="ShadowTextDark" href="https://www.microsoft.com/maps/assets/docs/terms.aspx" title="Terms" target="mc_bingMaps" style="pointer-events: auto">Terms</a></div></div>`);
                         $('.bm_bottomRightOverlay').remove();
